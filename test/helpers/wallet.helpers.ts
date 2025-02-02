@@ -22,7 +22,7 @@ export function createWalletProps(): Props {
 
 export function createFakeWallet(props: Partial<Props> = {}) {
 	const type = props.type ?? WalletType.COMMON;
-	const balance = Monetary.create(props.balance ?? 100).getRight();
+	const balance = Monetary.create(props.balance ?? 100);
 	const userId = new UniqueIdentifier(props.userId);
 	const version = props.version ?? 1;
 

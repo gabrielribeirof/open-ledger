@@ -21,7 +21,7 @@ export class TransferMapper {
 			{
 				originId: originId.getRight(),
 				targetId: targetId.getRight(),
-				amount: amount.getRight(),
+				amount,
 			},
 			id.getRight(),
 		).getRight();

@@ -7,7 +7,7 @@ describe('Transfer', () => {
 	it('should not create transfer with invalid amount data', () => {
 		const originId = new UniqueIdentifier();
 		const targetId = new UniqueIdentifier();
-		const amount = Monetary.create(0).getRight();
+		const amount = Monetary.create(0);
 
 		const sut = Transfer.create({
 			originId,
@@ -21,7 +21,7 @@ describe('Transfer', () => {
 	it('should create transfer with valid data', () => {
 		const originId = new UniqueIdentifier();
 		const targetId = new UniqueIdentifier();
-		const amount = Monetary.create(100).getRight();
+		const amount = Monetary.create(100);
 
 		const sut = Transfer.create({
 			originId,

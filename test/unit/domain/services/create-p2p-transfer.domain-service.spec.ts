@@ -5,7 +5,7 @@ import { Monetary } from '@/shared/domain/monetary';
 import { InsufficientFundsError } from '@/shared/errors/insufficient-funds.error';
 import { InsufficientWalletTypePermissionsError } from '@/shared/errors/insufficient-wallet-type-permissions.error';
 import { UnauthorizedTransferError } from '@/shared/errors/unauthorized-transfer.error';
-import { createFakeWallet } from '@test/helpers/wallet.helpders';
+import { createFakeWallet } from '@test/helpers/wallet.helpers';
 
 function createSut(authorizerResponse = true) {
 	return new CreateP2PTransferDomainService(
@@ -18,7 +18,7 @@ describe('CreateP2PTransferDomainService', () => {
 		const origin = createFakeWallet({ type: WalletType.MERCHANT });
 		const target = createFakeWallet({ type: WalletType.COMMON });
 
-		const amount = Monetary.create(100).getRight();
+		const amount = Monetary.create(100);
 
 		const result = await createSut().execute(origin, target, amount);
 
@@ -30,7 +30,7 @@ describe('CreateP2PTransferDomainService', () => {
 		const origin = createFakeWallet({ type: WalletType.COMMON, balance: 50 });
 		const target = createFakeWallet({ type: WalletType.COMMON });
 
-		const amount = Monetary.create(100).getRight();
+		const amount = Monetary.create(100);
 
 		const result = await createSut().execute(origin, target, amount);
 
@@ -42,7 +42,7 @@ describe('CreateP2PTransferDomainService', () => {
 		const origin = createFakeWallet({ type: WalletType.COMMON, balance: 100 });
 		const target = createFakeWallet({ type: WalletType.COMMON });
 
-		const amount = Monetary.create(100).getRight();
+		const amount = Monetary.create(100);
 
 		const result = await createSut(false).execute(origin, target, amount);
 
@@ -54,7 +54,7 @@ describe('CreateP2PTransferDomainService', () => {
 		const origin = createFakeWallet({ type: WalletType.COMMON, balance: 100 });
 		const target = createFakeWallet({ type: WalletType.COMMON, balance: 0 });
 
-		const amount = Monetary.create(100).getRight();
+		const amount = Monetary.create(100);
 
 		const result = await createSut().execute(origin, target, amount);
 

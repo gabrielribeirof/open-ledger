@@ -42,12 +42,11 @@ export class CreateP2PTransferService {
 		const targetId = UniqueIdentifier.create(input.targetId);
 		const amount = Monetary.create(input.amount);
 
-		if (amount.isLeft() || originId.isLeft() || targetId.isLeft()) {
+		if (originId.isLeft() || targetId.isLeft()) {
 			return left(
 				new InvalidParametersError<CreateP2PTransferServiceInput>({
 					originId,
 					targetId,
-					amount,
 				}),
 			);
 		}
@@ -67,7 +66,7 @@ export class CreateP2PTransferService {
 		const transferOrError = await this.createP2PTransferDomainService.execute(
 			origin,
 			target,
-			amount.value,
+			amount,
 		);
 
 		if (transferOrError.isLeft()) {

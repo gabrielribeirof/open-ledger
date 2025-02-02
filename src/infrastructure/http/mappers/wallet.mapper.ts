@@ -11,7 +11,7 @@ export class WalletMapper {
 	static toDomain(entity: WalletEntity): Wallet {
 		const id = UniqueIdentifier.create(entity.id).getRight();
 		const userId = UniqueIdentifier.create(entity.user.id).getRight();
-		const balance = Monetary.create(entity.balance).getRight();
+		const balance = Monetary.create(entity.balance);
 
 		function getType({ type }: Pick<WalletEntity, 'type'>): WalletType {
 			return type === 'COMMON' ? WalletType.COMMON : WalletType.MERCHANT;

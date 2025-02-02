@@ -8,6 +8,7 @@ import {
 	CreateP2PTransferService,
 } from '@/services/create-p2p-transfer.service';
 import { InvalidParametersError } from '@/shared/errors/invalid-parameters.error';
+import { InvalidFormatViolation } from '@/shared/errors/violations/invalid-format.violation';
 
 function createSut(authorizerResponse = true) {
 	const domainService = new CreateP2PTransferDomainService(
@@ -35,15 +36,16 @@ describe('CreateP2PTransferService', () => {
 
 		const sut = await createSut().execute(input);
 
+		console.log(sut.value);
+
 		expect(sut.isLeft()).toBe(true);
 		expect(sut.value).toBeInstanceOf(InvalidParametersError);
-		expect(
-			(sut.value as InvalidParametersError<CreateP2PTransferServiceInput>)
-				.violations,
-		).toMatchObject({
-			originId: expect.anything(),
-			targetId: expect.anything(),
-			amount: expect.anything(),
-		});
+		expect(sut.value).toEqual(
+			new InvalidParametersError<CreateP2PTransferServiceInput>({
+				originId: [new InvalidFormatViolation()],
+				targetId: [new InvalidFormatViolation()],
+				amount: [new InvalidFormatViolation()],
+			}),
+		);
 	});
 });
