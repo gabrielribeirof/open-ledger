@@ -16,6 +16,7 @@ import {
 } from '@/domain/wallet/iwallet.repository';
 import { Transfer } from '@/domain/transfer/transfer';
 import { Error } from '@/shared/seedwork/error';
+import { InternalServerError } from '@/shared/errors/internal-server.error';
 
 export interface CreateP2PTransferServiceInput {
 	originId: string;
@@ -42,11 +43,12 @@ export class CreateP2PTransferService {
 		const targetId = UniqueIdentifier.create(input.targetId);
 		const amount = Monetary.create(input.amount);
 
-		if (originId.isLeft() || targetId.isLeft()) {
+		if (amount.isLeft() || originId.isLeft() || targetId.isLeft()) {
 			return left(
 				new InvalidParametersError<CreateP2PTransferServiceInput>({
 					originId,
 					targetId,
+					amount,
 				}),
 			);
 		}
@@ -66,21 +68,24 @@ export class CreateP2PTransferService {
 		const transferOrError = await this.createP2PTransferDomainService.execute(
 			origin,
 			target,
-			amount,
+			amount.value,
 		);
 
 		if (transferOrError.isLeft()) {
 			return left(transferOrError.value);
 		}
 
+		await this.unitOfWork.begin();
+
 		try {
 			await this.transferRepository.save(transferOrError.value);
 			await this.walletRepository.save(origin);
 			await this.walletRepository.save(target);
 			await this.unitOfWork.commit();
-		} catch (error) {
+		} catch {
 			await this.unitOfWork.rollback();
-			throw error;
+
+			return left(new InternalServerError());
 		}
 
 		return right(transferOrError.value);
