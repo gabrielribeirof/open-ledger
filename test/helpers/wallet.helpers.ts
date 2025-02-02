@@ -28,7 +28,7 @@ export function createFakeWallet(props: Partial<Props> = {}) {
 
 	return Wallet.create({
 		type,
-		balance,
+		balance: balance.getRight(),
 		userId,
 		version,
 	});

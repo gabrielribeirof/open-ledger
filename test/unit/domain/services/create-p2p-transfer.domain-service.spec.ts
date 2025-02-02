@@ -18,7 +18,7 @@ describe('CreateP2PTransferDomainService', () => {
 		const origin = createFakeWallet({ type: WalletType.MERCHANT });
 		const target = createFakeWallet({ type: WalletType.COMMON });
 
-		const amount = Monetary.create(100);
+		const amount = Monetary.create(100).getRight();
 
 		const result = await createSut().execute(origin, target, amount);
 
@@ -30,7 +30,7 @@ describe('CreateP2PTransferDomainService', () => {
 		const origin = createFakeWallet({ type: WalletType.COMMON, balance: 50 });
 		const target = createFakeWallet({ type: WalletType.COMMON });
 
-		const amount = Monetary.create(100);
+		const amount = Monetary.create(100).getRight();
 
 		const result = await createSut().execute(origin, target, amount);
 
@@ -42,7 +42,7 @@ describe('CreateP2PTransferDomainService', () => {
 		const origin = createFakeWallet({ type: WalletType.COMMON, balance: 100 });
 		const target = createFakeWallet({ type: WalletType.COMMON });
 
-		const amount = Monetary.create(100);
+		const amount = Monetary.create(100).getRight();
 
 		const result = await createSut(false).execute(origin, target, amount);
 
@@ -54,7 +54,7 @@ describe('CreateP2PTransferDomainService', () => {
 		const origin = createFakeWallet({ type: WalletType.COMMON, balance: 100 });
 		const target = createFakeWallet({ type: WalletType.COMMON, balance: 0 });
 
-		const amount = Monetary.create(100);
+		const amount = Monetary.create(100).getRight();
 
 		const result = await createSut().execute(origin, target, amount);
 

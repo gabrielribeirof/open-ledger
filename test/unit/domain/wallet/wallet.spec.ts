@@ -7,7 +7,7 @@ describe('Wallet', () => {
 	it('should create wallet with valid data', () => {
 		const walletType = WalletType.COMMON;
 		const userId = new UniqueIdentifier();
-		const balance = Monetary.create(100);
+		const balance = Monetary.create(100).getRight();
 		const version = 1;
 
 		const sut = Wallet.create({
@@ -26,7 +26,7 @@ describe('Wallet', () => {
 	it('should be able to deposit money', () => {
 		const walletType = WalletType.MERCHANT;
 		const userId = new UniqueIdentifier();
-		const balance = Monetary.create(100);
+		const balance = Monetary.create(100).getRight();
 		const version = 1;
 
 		const sut = Wallet.create({
@@ -36,7 +36,7 @@ describe('Wallet', () => {
 			version,
 		});
 
-		const depositAmount = Monetary.create(100);
+		const depositAmount = Monetary.create(100).getRight();
 		sut.deposit(depositAmount);
 
 		balance.add(depositAmount);
@@ -47,7 +47,7 @@ describe('Wallet', () => {
 	it('should be able to withdraw money', () => {
 		const walletType = WalletType.MERCHANT;
 		const userId = new UniqueIdentifier();
-		const balance = Monetary.create(100);
+		const balance = Monetary.create(100).getRight();
 		const version = 1;
 
 		const sut = Wallet.create({
@@ -57,7 +57,7 @@ describe('Wallet', () => {
 			version,
 		});
 
-		const withdrawAmount = Monetary.create(50);
+		const withdrawAmount = Monetary.create(50).getRight();
 		sut.withdraw(withdrawAmount);
 
 		balance.subtract(withdrawAmount);

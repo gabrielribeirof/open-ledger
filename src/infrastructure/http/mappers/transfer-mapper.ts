@@ -12,18 +12,22 @@ export class TransferMapper {
 	}
 
 	static toDomain(entity: TransferEntity): Transfer {
-		const id = UniqueIdentifier.create(entity.id);
-		const originId = UniqueIdentifier.create(entity.origin_wallet.id);
-		const targetId = UniqueIdentifier.create(entity.origin_wallet.id);
-		const amount = Monetary.create(entity.amount);
+		const id = UniqueIdentifier.create(entity.id).getRight();
+		const originId = UniqueIdentifier.create(
+			entity.origin_wallet.id,
+		).getRight();
+		const targetId = UniqueIdentifier.create(
+			entity.origin_wallet.id,
+		).getRight();
+		const amount = Monetary.create(entity.amount).getRight();
 
 		return Transfer.create(
 			{
-				originId: originId.getRight(),
-				targetId: targetId.getRight(),
+				originId,
+				targetId,
 				amount,
 			},
-			id.getRight(),
+			id,
 		).getRight();
 	}
 
