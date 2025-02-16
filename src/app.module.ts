@@ -26,6 +26,7 @@ import { NativeErrorFilter } from './shared/filters/native-error.filter';
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
+			ignoreEnvFile: true,
 			validationSchema: enviromentVariablesSchema,
 		}),
 		MikroOrmModule.forRoot({
@@ -43,12 +44,12 @@ import { NativeErrorFilter } from './shared/filters/native-error.filter';
 			provide: WALLET_REPOSITORY,
 			useClass: MikroOrmWalletRepository,
 		},
-		CreateP2PTransferDomainService,
-		CreateP2PTransferService,
 		{
 			provide: UNIT_OF_WORK,
 			useClass: MikroOrmUnitOfWork,
 		},
+		CreateP2PTransferDomainService,
+		CreateP2PTransferService,
 		{
 			provide: ITransferAuthorizerProvider,
 			useClass: findTransferAuthorizerProviders(
