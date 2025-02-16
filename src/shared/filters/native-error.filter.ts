@@ -7,7 +7,7 @@ import {
 import { type Request, type Response } from 'express';
 import { InternalServerError } from '../errors/internal-server.error';
 
-@Catch()
+@Catch(Error)
 export class NativeErrorFilter implements ExceptionFilter {
 	private readonly logger = new Logger(NativeErrorFilter.name);
 
