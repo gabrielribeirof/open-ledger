@@ -11,8 +11,8 @@ export class TransfersController {
 	async create(@Body() body: CreateTransferDTO) {
 		const transferOrError = await this.createP2PTransferService.execute({
 			amount: body.amount,
-			originId: body.origin_id,
-			targetId: body.target_id,
+			origin_id: body.origin_id,
+			target_id: body.target_id,
 		});
 
 		if (transferOrError.isLeft()) throw transferOrError.value;
