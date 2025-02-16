@@ -1,6 +1,5 @@
 import { CreateP2PTransferDomainService } from '@/domain/services/create-p2p-transfer.domain-service';
 import { Transfer } from '@/domain/transfer/transfer';
-import { InMemoryTransferRepository } from '@/infrastructure/repositories/in-memory/in-memory-transfer.repository';
 import { InMemoryWalletRepository } from '@/infrastructure/repositories/in-memory/in-memory-wallet.repository';
 import { InMemoryUnitOfWork } from '@/infrastructure/repositories/in-memory/in-memory.unit-of-work';
 import { InMemoryTransferAuthorizerProvider } from '@/providers/transfer-authorizer/implementations/in-memory-transfer-authorizer.provider';
@@ -19,35 +18,32 @@ import { v4 } from 'uuid';
 const domainService = new CreateP2PTransferDomainService(
 	new InMemoryTransferAuthorizerProvider(true),
 );
-const transferRepository = new InMemoryTransferRepository();
 const walletRepository = new InMemoryWalletRepository();
 const unitOfWork = new InMemoryUnitOfWork();
 
 const sut = new CreateP2PTransferService(
 	domainService,
-	transferRepository,
 	walletRepository,
 	unitOfWork,
 );
 
 describe('CreateP2PTransferService', () => {
 	beforeEach(() => {
-		transferRepository.transfers.clear();
 		walletRepository.wallet.clear();
 	});
 
 	it('should not be executed with invalid parameters', async () => {
 		const result = await sut.execute({
-			originId: 'originId',
-			targetId: 'targetId',
+			origin_id: 'originId',
+			target_id: 'targetId',
 			amount: 1.111,
 		});
 
 		expect(result.value).toBeInstanceOf(InvalidParametersError);
 		expect(result.value).toEqual(
 			new InvalidParametersError<CreateP2PTransferServiceInput>({
-				originId: [new InvalidFormatViolation()],
-				targetId: [new InvalidFormatViolation()],
+				origin_id: [new InvalidFormatViolation()],
+				target_id: [new InvalidFormatViolation()],
 				amount: [new InvalidFormatViolation()],
 			}),
 		);
@@ -55,8 +51,8 @@ describe('CreateP2PTransferService', () => {
 
 	it('should not be executed if the origin wallet does not exist', async () => {
 		const result = await sut.execute({
-			originId: v4(),
-			targetId: v4(),
+			origin_id: v4(),
+			target_id: v4(),
 			amount: 1,
 		});
 
@@ -69,8 +65,8 @@ describe('CreateP2PTransferService', () => {
 		walletRepository.save(originWallet);
 
 		const result = await sut.execute({
-			originId: originWallet.id.value,
-			targetId: v4(),
+			origin_id: originWallet.id.value,
+			target_id: v4(),
 			amount: 1,
 		});
 
@@ -87,8 +83,8 @@ describe('CreateP2PTransferService', () => {
 		walletRepository.save(targetWallet);
 
 		const result = await sut.execute({
-			originId: originWallet.id.value,
-			targetId: targetWallet.id.value,
+			origin_id: originWallet.id.value,
+			target_id: targetWallet.id.value,
 			amount: 1,
 		});
 
@@ -106,11 +102,11 @@ describe('CreateP2PTransferService', () => {
 		const commit = jest.spyOn(unitOfWork, 'commit');
 		const rollback = jest.spyOn(unitOfWork, 'rollback');
 
-		jest.spyOn(transferRepository, 'save').mockRejectedValueOnce(0);
+		jest.spyOn(unitOfWork.transferRepository, 'save').mockRejectedValueOnce(0);
 
 		const result = await sut.execute({
-			originId: originWallet.id.value,
-			targetId: targetWallet.id.value,
+			origin_id: originWallet.id.value,
+			target_id: targetWallet.id.value,
 			amount: 1,
 		});
 
@@ -120,6 +116,8 @@ describe('CreateP2PTransferService', () => {
 		expect(rollback).toHaveBeenCalledTimes(1);
 
 		begin.mockReset();
+		commit.mockReset();
+		rollback.mockReset();
 	});
 
 	it('should be able to create a transfer when all conditions are met', async () => {
@@ -133,8 +131,8 @@ describe('CreateP2PTransferService', () => {
 		const commit = jest.spyOn(unitOfWork, 'commit');
 
 		const result = await sut.execute({
-			originId: originWallet.id.value,
-			targetId: targetWallet.id.value,
+			origin_id: originWallet.id.value,
+			target_id: targetWallet.id.value,
 			amount: 1,
 		});
 
