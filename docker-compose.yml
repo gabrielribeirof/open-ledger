@@ -10,3 +10,46 @@ services:
       POSTGRES_DB: wallet
     ports:
       - "5432:5432"
+    
+  test:
+    build: .
+    env_file:
+      - .env
+    command: yarn test:cov
+    volumes:
+      - .:/wallet
+      - /wallet/node_modules
+    depends_on:
+      - database
+    links:
+      - database
+  
+  migrate:
+    build: .
+    env_file:
+      - .env
+    environment:
+      MIKRO_ORM_ENTITIES: ./src/infrastructure/mikro-orm/entities
+    command: yarn migrate
+    volumes:
+      - .:/wallet
+      - /wallet/node_modules
+    depends_on:
+      - database
+    links:
+      - database
+    
+  api:
+    build: .
+    env_file:
+      - .env
+    environment:
+      MIKRO_ORM_DEBUG: true
+    command: yarn start
+    volumes:
+      - .:/wallet
+      - /wallet/node_modules
+    depends_on:
+      - database
+    links:
+      - database

@@ -12,7 +12,12 @@ const config: Config.InitialOptions = {
 	moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
 		prefix: '<rootDir>/',
 	}),
-	collectCoverageFrom: ['src/**/*.ts', '!**/domain/**/i*repository.ts'],
+	collectCoverageFrom: [
+		'src/**/*.ts',
+		'!**/domain/**/i*repository.ts',
+		'!**/*.module.ts',
+	],
+	coveragePathIgnorePatterns: ['src/infrastructure/mikro-orm/migrations'],
 	coverageReporters: ['html', 'text'],
 };
 
