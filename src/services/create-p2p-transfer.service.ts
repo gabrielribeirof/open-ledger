@@ -7,10 +7,6 @@ import { CreateP2PTransferDomainService } from '@/domain/services/create-p2p-tra
 import { Inject, Injectable } from '@nestjs/common';
 import { IUnitOfWork, UNIT_OF_WORK } from '@/shared/seedwork/iunit-of-work';
 import {
-	ITransferRepository,
-	TRANSFER_REPOSITORY,
-} from '@/domain/transfer/itransfer.repository';
-import {
 	IWalletRepository,
 	WALLET_REPOSITORY,
 } from '@/domain/wallet/iwallet.repository';
@@ -19,8 +15,8 @@ import { Error } from '@/shared/seedwork/error';
 import { InternalServerError } from '@/shared/errors/internal-server.error';
 
 export interface CreateP2PTransferServiceInput {
-	originId: string;
-	targetId: string;
+	origin_id: string;
+	target_id: string;
 	amount: number;
 }
 
@@ -28,8 +24,6 @@ export interface CreateP2PTransferServiceInput {
 export class CreateP2PTransferService {
 	constructor(
 		private readonly createP2PTransferDomainService: CreateP2PTransferDomainService,
-		@Inject(TRANSFER_REPOSITORY)
-		private readonly transferRepository: ITransferRepository,
 		@Inject(WALLET_REPOSITORY)
 		private readonly walletRepository: IWalletRepository,
 		@Inject(UNIT_OF_WORK)
@@ -39,15 +33,15 @@ export class CreateP2PTransferService {
 	async execute(
 		input: CreateP2PTransferServiceInput,
 	): Promise<Either<Error, Transfer>> {
-		const originId = UniqueIdentifier.create(input.originId);
-		const targetId = UniqueIdentifier.create(input.targetId);
+		const originId = UniqueIdentifier.create(input.origin_id);
+		const targetId = UniqueIdentifier.create(input.target_id);
 		const amount = Monetary.create(input.amount);
 
 		if (amount.isLeft() || originId.isLeft() || targetId.isLeft()) {
 			return left(
 				new InvalidParametersError<CreateP2PTransferServiceInput>({
-					originId,
-					targetId,
+					origin_id: originId,
+					target_id: targetId,
 					amount,
 				}),
 			);
@@ -78,9 +72,9 @@ export class CreateP2PTransferService {
 		await this.unitOfWork.begin();
 
 		try {
-			await this.transferRepository.save(transferOrError.value);
-			await this.walletRepository.save(origin);
-			await this.walletRepository.save(target);
+			await this.unitOfWork.transferRepository.save(transferOrError.value);
+			await this.unitOfWork.walletRepository.save(origin);
+			await this.unitOfWork.walletRepository.save(target);
 			await this.unitOfWork.commit();
 		} catch {
 			await this.unitOfWork.rollback();

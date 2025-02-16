@@ -1,5 +1,6 @@
 import { Wallet } from '@/domain/wallet/wallet';
 import { WalletType } from '@/domain/wallet/wallet-type';
+import { UserEntity } from '@/infrastructure/mikro-orm/entities/user.entity';
 import {
 	WalletEntity,
 	WalletEntityType,
@@ -27,11 +28,12 @@ export class WalletMapper {
 			id,
 		);
 	}
-	static toPersistence(wallet: Wallet): WalletEntity {
+
+	static toPersistence(wallet: Wallet, userRef: UserEntity): WalletEntity {
 		const entity = new WalletEntity();
 
 		entity.id = wallet.id.value;
-		entity.user.id = wallet.userId.value;
+		entity.user = userRef;
 		entity.balance = wallet.balance.value;
 		entity.type =
 			wallet.type === WalletType.COMMON

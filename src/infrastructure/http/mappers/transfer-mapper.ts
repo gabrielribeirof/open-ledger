@@ -3,6 +3,7 @@ import { TransferDTO } from '../dtos/entities/transfer.dto';
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
 import { Monetary } from '@/shared/domain/monetary';
 import { TransferEntity } from '@/infrastructure/mikro-orm/entities/transfer.entity';
+import { WalletEntity } from '@/infrastructure/mikro-orm/entities/wallet.entity';
 
 export class TransferMapper {
 	static toDTO(transfer: Transfer): TransferDTO {
@@ -31,11 +32,15 @@ export class TransferMapper {
 		).getRight();
 	}
 
-	static toPersistence(transfer: Transfer): TransferEntity {
+	static toPersistence(
+		transfer: Transfer,
+		originWalletRef: WalletEntity,
+		targetWalletRef: WalletEntity,
+	): TransferEntity {
 		const entity = new TransferEntity();
 		entity.id = transfer.id.value;
-		entity.origin_wallet.id = transfer.originId.value;
-		entity.target_wallet.id = transfer.targetId.value;
+		entity.origin_wallet = originWalletRef;
+		entity.target_wallet = targetWalletRef;
 		entity.amount = transfer.amount.value;
 		return entity;
 	}
