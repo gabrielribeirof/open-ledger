@@ -1,4 +1,11 @@
-import { Entity, Enum, OneToOne, PrimaryKey, Property } from '@mikro-orm/core';
+import {
+	Entity,
+	Enum,
+	OneToOne,
+	Opt,
+	PrimaryKey,
+	Property,
+} from '@mikro-orm/core';
 import { UserEntity } from './user.entity';
 
 export enum WalletEntityType {
@@ -20,8 +27,8 @@ export class WalletEntity {
 	@Property()
 	version: number;
 
-	@Property()
-	updated_at: Date;
+	@Property({ onUpdate: () => new Date() })
+	updated_at: Date & Opt = new Date();
 
 	@OneToOne(() => UserEntity, (user) => user.wallet, {
 		owner: true,
