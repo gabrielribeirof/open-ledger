@@ -2,18 +2,21 @@ import { Either, left } from '@/shared/lib/either';
 import { Transfer } from '../transfer/transfer';
 import { Wallet } from '../wallet/wallet';
 import { Monetary } from '@/shared/domain/monetary';
-import { InsufficientFundsError } from '../../shared/errors/insufficient-funds.error';
+import { InsufficientFundsError } from '../../shared/domain/errors/insufficient-funds.error';
 import { WalletType } from '../wallet/wallet-type';
-import { ITransferAuthorizerProvider } from '@/providers/transfer-authorizer/itransfer-authorizer.provider';
-import { UnauthorizedTransferError } from '@/shared/errors/unauthorized-transfer.error';
+import {
+	ITransferAuthorizerProvider,
+	TRANSFER_AUTHORIZER_PROVIDER,
+} from '@/providers/transfer-authorizer/itransfer-authorizer.provider';
+import { UnauthorizedTransferError } from '@/shared/domain/errors/unauthorized-transfer.error';
 import { Inject, Injectable } from '@nestjs/common';
-import { InsufficientWalletTypePermissionsError } from '@/shared/errors/insufficient-wallet-type-permissions.error';
+import { InsufficientWalletTypePermissionsError } from '@/shared/domain/errors/insufficient-wallet-type-permissions.error';
 import { Error } from '@/shared/seedwork/error';
 
 @Injectable()
 export class CreateP2PTransferDomainService {
 	constructor(
-		@Inject(ITransferAuthorizerProvider)
+		@Inject(TRANSFER_AUTHORIZER_PROVIDER)
 		private readonly transferAuthorizer: ITransferAuthorizerProvider,
 	) {}
 

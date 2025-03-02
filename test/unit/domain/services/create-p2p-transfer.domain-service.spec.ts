@@ -1,10 +1,10 @@
 import { CreateP2PTransferDomainService } from '@/domain/services/create-p2p-transfer.domain-service';
 import { WalletType } from '@/domain/wallet/wallet-type';
-import { InMemoryTransferAuthorizerProvider } from '@/providers/transfer-authorizer/implementations/in-memory-transfer-authorizer.provider';
+import { InMemoryTransferAuthorizerProvider } from '@/providers/transfer-authorizer/in-memory/in-memory-transfer-authorizer.provider';
 import { Monetary } from '@/shared/domain/monetary';
-import { InsufficientFundsError } from '@/shared/errors/insufficient-funds.error';
-import { InsufficientWalletTypePermissionsError } from '@/shared/errors/insufficient-wallet-type-permissions.error';
-import { UnauthorizedTransferError } from '@/shared/errors/unauthorized-transfer.error';
+import { InsufficientFundsError } from '@/shared/domain/errors/insufficient-funds.error';
+import { InsufficientWalletTypePermissionsError } from '@/shared/domain/errors/insufficient-wallet-type-permissions.error';
+import { UnauthorizedTransferError } from '@/shared/domain/errors/unauthorized-transfer.error';
 import { createFakeWallet } from '@test/helpers/wallet.helpers';
 
 function createSut(authorizerResponse = true) {

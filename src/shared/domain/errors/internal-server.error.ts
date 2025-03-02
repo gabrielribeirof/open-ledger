@@ -1,5 +1,5 @@
-import { Error } from '../seedwork/error';
-import { ErrorCode } from '../seedwork/error-code';
+import { Error } from '../../seedwork/error';
+import { ErrorCode } from '../../seedwork/error-code';
 
 export class InternalServerError extends Error {
 	constructor() {

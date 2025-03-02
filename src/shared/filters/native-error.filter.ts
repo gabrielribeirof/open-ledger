@@ -5,7 +5,7 @@ import {
 	Logger,
 } from '@nestjs/common';
 import { type Request, type Response } from 'express';
-import { InternalServerError } from '../errors/internal-server.error';
+import { InternalServerError } from '../domain/errors/internal-server.error';
 
 @Catch(Error)
 export class NativeErrorFilter implements ExceptionFilter {

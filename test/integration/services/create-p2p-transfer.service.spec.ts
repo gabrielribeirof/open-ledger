@@ -2,16 +2,16 @@ import { CreateP2PTransferDomainService } from '@/domain/services/create-p2p-tra
 import { Transfer } from '@/domain/transfer/transfer';
 import { InMemoryWalletRepository } from '@/infrastructure/repositories/in-memory/in-memory-wallet.repository';
 import { InMemoryUnitOfWork } from '@/infrastructure/repositories/in-memory/in-memory.unit-of-work';
-import { InMemoryTransferAuthorizerProvider } from '@/providers/transfer-authorizer/implementations/in-memory-transfer-authorizer.provider';
+import { InMemoryTransferAuthorizerProvider } from '@/providers/transfer-authorizer/in-memory/in-memory-transfer-authorizer.provider';
 import {
 	CreateP2PTransferServiceInput,
 	CreateP2PTransferService,
 } from '@/services/create-p2p-transfer.service';
-import { InsufficientFundsError } from '@/shared/errors/insufficient-funds.error';
-import { InternalServerError } from '@/shared/errors/internal-server.error';
-import { InvalidParametersError } from '@/shared/errors/invalid-parameters.error';
-import { InvalidFormatViolation } from '@/shared/errors/violations/invalid-format.violation';
-import { WalletNotFoundError } from '@/shared/errors/wallet-not-found.error';
+import { InsufficientFundsError } from '@/shared/domain/errors/insufficient-funds.error';
+import { InternalServerError } from '@/shared/domain/errors/internal-server.error';
+import { InvalidParametersError } from '@/shared/domain/errors/invalid-parameters.error';
+import { InvalidFormatViolation } from '@/shared/domain/errors/violations/invalid-format.violation';
+import { WalletNotFoundError } from '@/shared/domain/errors/wallet-not-found.error';
 import { createFakeWallet } from '@test/helpers/wallet.helpers';
 import { v4 } from 'uuid';
 

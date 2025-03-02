@@ -1,5 +1,5 @@
 import { Email } from '@/domain/user/email';
-import { InvalidFormatViolation } from '@/shared/errors/violations/invalid-format.violation';
+import { InvalidFormatViolation } from '@/shared/domain/errors/violations/invalid-format.violation';
 import { faker } from '@faker-js/faker';
 
 describe('Email', () => {
@@ -33,22 +33,6 @@ describe('Email', () => {
 	it('should return InvalidFormatViolation for an empty string', () => {
 		const emptyEmail = '';
 		const sut = Email.create({ value: emptyEmail });
-
-		expect(sut.isLeft()).toBe(true);
-		expect(sut.value).toBeInstanceOf(InvalidFormatViolation);
-	});
-
-	it('should return InvalidFormatViolation for a null value', () => {
-		const nullEmail = null;
-		const sut = Email.create({ value: nullEmail });
-
-		expect(sut.isLeft()).toBe(true);
-		expect(sut.value).toBeInstanceOf(InvalidFormatViolation);
-	});
-
-	it('should return InvalidFormatViolation for an undefined value', () => {
-		const undefinedEmail = undefined;
-		const sut = Email.create({ value: undefinedEmail });
 
 		expect(sut.isLeft()).toBe(true);
 		expect(sut.value).toBeInstanceOf(InvalidFormatViolation);

@@ -1,6 +1,6 @@
 import { Violation } from '@/shared/seedwork/violation';
-import { Error } from '../seedwork/error';
-import { ErrorCode } from '../seedwork/error-code';
+import { Error } from '../../seedwork/error';
+import { ErrorCode } from '../../seedwork/error-code';
 import { Either, Right } from '@/shared/lib/either';
 
 type ViolationsConstructor =
@@ -28,7 +28,7 @@ function violationsContructorToViolations(
 			return [violations.value];
 		}
 
-		return undefined;
+		return [];
 	}
 
 	if (isViolations(violations)) {
@@ -52,6 +52,7 @@ export class InvalidParametersError<
 
 		this.violations = Object.entries(violations).reduce(
 			(previousValue, [key, value]) => {
+				if (value === undefined) return previousValue;
 				if (value instanceof Right) return previousValue;
 
 				return {

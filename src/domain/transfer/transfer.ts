@@ -2,7 +2,7 @@ import { AggregateRoot } from '@/shared/seedwork/aggregate-root';
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
 import { Monetary } from '@/shared/domain/monetary';
 import { Either, left, right } from '@/shared/lib/either';
-import { TransferAmountMustBeGreaterThanZeroError } from '@/shared/errors/transfer-amount-must-be-greater-than-zero.error';
+import { TransferAmountMustBeGreaterThanZeroError } from '@/shared/domain/errors/transfer-amount-must-be-greater-than-zero.error';
 import { Error } from '@/shared/seedwork/error';
 
 interface TransferProperties {

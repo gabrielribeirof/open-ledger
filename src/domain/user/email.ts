@@ -3,7 +3,7 @@ import { ValueObject } from '@/shared/seedwork/value-object';
 import { isEmail } from 'class-validator';
 import { Either, left, right } from '@/shared/lib/either';
 import { Violation } from '@/shared/seedwork/violation';
-import { InvalidFormatViolation } from '@/shared/errors/violations/invalid-format.violation';
+import { InvalidFormatViolation } from '@/shared/domain/errors/violations/invalid-format.violation';
 
 interface EmailProperties {
 	value: string;

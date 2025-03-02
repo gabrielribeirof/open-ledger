@@ -1,5 +1,5 @@
 import { ValueObject } from '../../shared/seedwork/value-object';
-import { InvalidFormatViolation } from '../errors/violations/invalid-format.violation';
+import { InvalidFormatViolation } from '../domain/errors/violations/invalid-format.violation';
 import { Either, left, right } from '../lib/either';
 import { Violation } from '../seedwork/violation';
 
