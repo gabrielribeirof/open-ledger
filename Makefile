@@ -3,3 +3,6 @@ test: migrate
 
 migrate:
 	@docker compose up migrate
+
+up:
+	@docker compose up api
