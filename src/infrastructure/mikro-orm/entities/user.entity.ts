@@ -4,19 +4,19 @@ import { WalletEntity } from './wallet.entity';
 @Entity({ tableName: 'users' })
 export class UserEntity {
 	@PrimaryKey({ type: 'uuid' })
-	id: string;
+	id!: string;
 
 	@Property()
-	name: string;
+	name!: string;
 
 	@Property()
-	document: string;
+	document!: string;
 
 	@Property()
-	email: string;
+	email!: string;
 
 	@Property()
-	password: string;
+	password!: string;
 
 	@Property()
 	created_at: Date & Opt = new Date();
@@ -25,5 +25,5 @@ export class UserEntity {
 	updated_at: Date & Opt = new Date();
 
 	@OneToOne(() => WalletEntity, (wallet) => wallet.user)
-	wallet: WalletEntity;
+	wallet!: WalletEntity;
 }

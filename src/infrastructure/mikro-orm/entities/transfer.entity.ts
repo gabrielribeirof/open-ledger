@@ -4,17 +4,17 @@ import { WalletEntity } from './wallet.entity';
 @Entity({ tableName: 'transfers' })
 export class TransferEntity {
 	@PrimaryKey({ type: 'uuid' })
-	id: string;
+	id!: string;
 
 	@Property()
-	amount: number;
+	amount!: number;
 
 	@Property()
 	created_at: Date & Opt = new Date();
 
 	@ManyToOne(() => WalletEntity, { fieldName: 'origin_id' })
-	origin_wallet: WalletEntity;
+	origin_wallet!: WalletEntity;
 
 	@ManyToOne(() => WalletEntity, { fieldName: 'target_id' })
-	target_wallet: WalletEntity;
+	target_wallet!: WalletEntity;
 }

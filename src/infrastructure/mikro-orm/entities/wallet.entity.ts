@@ -16,16 +16,16 @@ export enum WalletEntityType {
 @Entity({ tableName: 'wallets' })
 export class WalletEntity {
 	@PrimaryKey({ type: 'uuid' })
-	id: string;
+	id!: string;
 
 	@Enum(() => WalletEntityType)
-	type: WalletEntityType;
+	type!: WalletEntityType;
 
 	@Property()
-	balance: number;
+	balance!: number;
 
 	@Property()
-	version: number;
+	version!: number;
 
 	@Property({ onUpdate: () => new Date() })
 	updated_at: Date & Opt = new Date();
@@ -34,5 +34,5 @@ export class WalletEntity {
 		owner: true,
 		fieldName: 'user_id',
 	})
-	user: UserEntity;
+	user!: UserEntity;
 }
