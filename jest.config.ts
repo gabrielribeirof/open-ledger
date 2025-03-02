@@ -17,7 +17,10 @@ const config: Config.InitialOptions = {
 		'!**/domain/**/i*repository.ts',
 		'!**/*.module.ts',
 	],
-	coveragePathIgnorePatterns: ['src/infrastructure/mikro-orm/migrations'],
+	coveragePathIgnorePatterns: [
+		'src/infrastructure/mikro-orm/migrations',
+		'src/shared/errors/violations',
+	],
 	coverageReporters: ['html', 'text'],
 };
 
