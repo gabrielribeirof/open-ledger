@@ -9,12 +9,12 @@ services:
       POSTGRES_PASSWORD: wallet
       POSTGRES_DB: wallet
     ports:
-      - "5432:5432"
+      - "5431:5432"
     
   test:
     build: .
     env_file:
-      - .env
+      - .env.test
     command: yarn test:cov
     volumes:
       - .:/wallet
@@ -45,7 +45,9 @@ services:
       - .env
     environment:
       MIKRO_ORM_DEBUG: true
-    command: yarn start
+    ports:
+      - 3000:3000
+    command: yarn start:dev
     volumes:
       - .:/wallet
       - /wallet/node_modules
