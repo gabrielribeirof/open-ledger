@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { enviromentVariablesSchema } from './enviroment-variables-schema';
+import {
+	ENVIROMENT_VARIABLES,
+	enviromentVariablesSchema,
+} from './enviroment-variables-schema';
 import { APP_FILTER } from '@nestjs/core';
 import { ErrorFilter } from './shared/filters/error.filter';
 import { TRANSFER_REPOSITORY } from './domain/transfer/itransfer.repository';
@@ -12,7 +15,7 @@ import { WalletEntity } from './infrastructure/mikro-orm/entities/wallet.entity'
 import { TransferEntity } from './infrastructure/mikro-orm/entities/transfer.entity';
 import { TransfersController } from './infrastructure/http/controllers/transfers.controller';
 import { HttpModule } from '@nestjs/axios';
-import { ITransferAuthorizerProvider } from './providers/transfer-authorizer/itransfer-authorizer.provider';
+import { TRANSFER_AUTHORIZER_PROVIDER } from './providers/transfer-authorizer/itransfer-authorizer.provider';
 import { findTransferAuthorizerProviders } from './providers/transfer-authorizer';
 import { getConfigOrThrow } from './shared/utils/get-config-or-throw.util';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
@@ -26,7 +29,7 @@ import { NativeErrorFilter } from './shared/filters/native-error.filter';
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
-			ignoreEnvFile: true,
+			ignoreEnvFile: false,
 			validationSchema: enviromentVariablesSchema,
 		}),
 		MikroOrmModule.forRoot({
@@ -51,9 +54,11 @@ import { NativeErrorFilter } from './shared/filters/native-error.filter';
 		CreateP2PTransferDomainService,
 		CreateP2PTransferService,
 		{
-			provide: ITransferAuthorizerProvider,
+			provide: TRANSFER_AUTHORIZER_PROVIDER,
 			useClass: findTransferAuthorizerProviders(
-				getConfigOrThrow('NODE_ENV') === 'test' ? 'in-memory' : 'devitools',
+				getConfigOrThrow(
+					ENVIROMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_PROVIDER,
+				),
 			),
 		},
 		{

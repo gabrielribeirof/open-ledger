@@ -1,10 +1,8 @@
-import { ProviderNotFoundError } from '@/shared/errors/provider-not-found.error';
-import { DevitoolsTransferAuthorizerProvider } from './implementations/devitools-transfer-authorizer.provider';
-import { InMemoryTransferAuthorizerProvider } from './implementations/in-memory-transfer-authorizer.provider';
+import { ProviderNotFoundError } from '@/shared/domain/errors/provider-not-found.error';
+import { DevitoolsTransferAuthorizerProvider } from './devitools/devitools-transfer-authorizer.provider';
+import { InMemoryTransferAuthorizerProvider } from './in-memory/in-memory-transfer-authorizer.provider';
 
-export function findTransferAuthorizerProviders(
-	type: 'in-memory' | 'devitools',
-) {
+export function findTransferAuthorizerProviders(type: string) {
 	switch (type) {
 		case 'in-memory':
 			return InMemoryTransferAuthorizerProvider;

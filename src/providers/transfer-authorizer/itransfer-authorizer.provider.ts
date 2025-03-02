@@ -9,4 +9,4 @@ export interface ITransferAuthorizerProvider {
 	): Promise<boolean>;
 }
 
-export const ITransferAuthorizerProvider = 'ITransferAuthorizerProvider';
+export const TRANSFER_AUTHORIZER_PROVIDER = 'ITransferAuthorizerProvider';
