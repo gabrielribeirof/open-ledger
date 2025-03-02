@@ -10,24 +10,49 @@ import { UserMapper } from '@/infrastructure/http/mappers/user-mapper';
 import { WalletEntity } from '@/infrastructure/mikro-orm/entities/wallet.entity';
 import { UserEntity } from '@/infrastructure/mikro-orm/entities/user.entity';
 import { TransferEntity } from '@/infrastructure/mikro-orm/entities/transfer.entity';
+import { WalletType } from '@/domain/wallet/wallet-type';
+import * as nock from 'nock';
+import { ENVIROMENT_VARIABLES } from '@/enviroment-variables-schema';
+import { ConfigService } from '@nestjs/config';
+import { DevitoolsAuthorizeResponse } from '@/providers/transfer-authorizer/devitools/schemas/devitools-authorize-response.schema';
+
+const transferAuthorizerServiceSuccessResponse: DevitoolsAuthorizeResponse = {
+	status: 'success',
+	data: {
+		authorization: true,
+	},
+};
 
 describe('TransfersController', () => {
 	let app: INestApplication;
 	let entityManager: EntityManager;
 
+	let transferAuthorizerService: string;
+
 	beforeAll(async () => {
-		const moduleFixture = await Test.createTestingModule({
+		const testingModule = await Test.createTestingModule({
 			imports: [AppModule],
 		}).compile();
 
-		app = moduleFixture.createNestApplication();
+		app = testingModule.createNestApplication();
 		entityManager = app.get(EntityManager).fork();
+
+		const configService = testingModule.get(ConfigService);
+
+		transferAuthorizerService = configService.getOrThrow(
+			ENVIROMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL,
+		);
+
+		nock(transferAuthorizerService)
+			.get('/authorize')
+			.reply(200, transferAuthorizerServiceSuccessResponse);
 
 		await app.init();
 	});
 
 	afterAll(async () => {
 		await app.close();
+		nock.cleanAll();
 	});
 
 	afterEach(async () => {
@@ -44,7 +69,10 @@ describe('TransfersController', () => {
 		const targetUser = createFakeUser();
 
 		const originWallet = createFakeWallet({ userId: originUser.id.value });
-		const targetWallet = createFakeWallet({ userId: targetUser.id.value });
+		const targetWallet = createFakeWallet({
+			userId: targetUser.id.value,
+			type: WalletType.MERCHANT,
+		});
 
 		await entityManager.insertMany([
 			UserMapper.toPersistence(originUser),
