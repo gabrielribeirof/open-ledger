@@ -1,7 +1,7 @@
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
 import { Either, left, right } from '@/shared/lib/either';
-import { InvalidParametersError } from '../shared/errors/invalid-parameters.error';
-import { WalletNotFoundError } from '../shared/errors/wallet-not-found.error';
+import { InvalidParametersError } from '../shared/domain/errors/invalid-parameters.error';
+import { WalletNotFoundError } from '../shared/domain/errors/wallet-not-found.error';
 import { Monetary } from '@/shared/domain/monetary';
 import { CreateP2PTransferDomainService } from '@/domain/services/create-p2p-transfer.domain-service';
 import { Inject, Injectable } from '@nestjs/common';
@@ -12,7 +12,7 @@ import {
 } from '@/domain/wallet/iwallet.repository';
 import { Transfer } from '@/domain/transfer/transfer';
 import { Error } from '@/shared/seedwork/error';
-import { InternalServerError } from '@/shared/errors/internal-server.error';
+import { InternalServerError } from '@/shared/domain/errors/internal-server.error';
 
 export interface CreateP2PTransferServiceInput {
 	origin_id: string;
