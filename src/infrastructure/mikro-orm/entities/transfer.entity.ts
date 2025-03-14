@@ -1,4 +1,11 @@
-import { Entity, ManyToOne, Opt, PrimaryKey, Property } from '@mikro-orm/core';
+import {
+	DecimalType,
+	Entity,
+	ManyToOne,
+	Opt,
+	PrimaryKey,
+	Property,
+} from '@mikro-orm/core';
 import { WalletEntity } from './wallet.entity';
 
 @Entity({ tableName: 'transfers' })
@@ -6,7 +13,8 @@ export class TransferEntity {
 	@PrimaryKey({ type: 'uuid' })
 	id!: string;
 
-	@Property()
+	// Max value = 999999999999999 OR 9 999 999 999 999.99
+	@Property({ type: new DecimalType('number'), precision: 15, scale: 2 })
 	amount!: number;
 
 	@Property()

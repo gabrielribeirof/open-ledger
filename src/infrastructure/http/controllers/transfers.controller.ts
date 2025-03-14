@@ -9,14 +9,12 @@ export class TransfersController {
 
 	@Post()
 	async create(@Body() body: CreateTransferDTO) {
-		const transferOrError = await this.createP2PTransferService.execute({
+		const transfer = await this.createP2PTransferService.execute({
 			amount: body.amount,
 			origin_id: body.origin_id,
 			target_id: body.target_id,
 		});
 
-		if (transferOrError.isLeft()) throw transferOrError.value;
-
-		return TransferMapper.toDTO(transferOrError.value);
+		return TransferMapper.toDTO(transfer);
 	}
 }

@@ -4,14 +4,16 @@ import { Wallet } from '@/domain/wallet/wallet';
 import { WalletMapper } from '@/infrastructure/http/mappers/wallet.mapper';
 import { WalletEntity } from '@/infrastructure/mikro-orm/entities/wallet.entity';
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UserEntity } from '@/infrastructure/mikro-orm/entities/user.entity';
 
 @Injectable()
 export class MikroOrmWalletRepository implements IWalletRepository {
+	private readonly logger = new Logger(MikroOrmWalletRepository.name);
+
 	private readonly repository: EntityRepository<WalletEntity>;
 
-	constructor(em: EntityManager) {
+	constructor(private em: EntityManager) {
 		this.repository = em.getRepository(WalletEntity);
 	}
 
@@ -24,10 +26,9 @@ export class MikroOrmWalletRepository implements IWalletRepository {
 	}
 
 	async save(wallet: Wallet): Promise<void> {
-		const userRef = this.repository
-			.getEntityManager()
-			.getReference(UserEntity, wallet.userId.value);
+		const userRef = this.em.getReference(UserEntity, wallet.userId.value);
+		const walletRef = this.em.getReference(WalletEntity, wallet.id.value);
 
-		await this.repository.upsert(WalletMapper.toPersistence(wallet, userRef));
+		WalletMapper.toPersistence(wallet, userRef, walletRef);
 	}
 }

@@ -29,8 +29,12 @@ export class WalletMapper {
 		);
 	}
 
-	static toPersistence(wallet: Wallet, userRef: UserEntity): WalletEntity {
-		const entity = new WalletEntity();
+	static toPersistence(
+		wallet: Wallet,
+		userRef: UserEntity,
+		walletRef?: WalletEntity,
+	): WalletEntity {
+		const entity = walletRef ?? new WalletEntity();
 
 		entity.id = wallet.id.value;
 		entity.user = userRef;
@@ -39,7 +43,6 @@ export class WalletMapper {
 			wallet.type === WalletType.COMMON
 				? WalletEntityType.COMMON
 				: WalletEntityType.MERCHANT;
-		entity.version = wallet.version;
 
 		return entity;
 	}

@@ -34,6 +34,7 @@ import { NativeErrorFilter } from './shared/filters/native-error.filter';
 		}),
 		MikroOrmModule.forRoot({
 			autoLoadEntities: true,
+			forceUtcTimezone: true,
 		}),
 		MikroOrmModule.forFeature([UserEntity, WalletEntity, TransferEntity]),
 		HttpModule,

@@ -14,8 +14,9 @@ export class TransferMapper {
 		transfer: Transfer,
 		originWalletRef: WalletEntity,
 		targetWalletRef: WalletEntity,
+		tranferRef?: TransferEntity,
 	): TransferEntity {
-		const entity = new TransferEntity();
+		const entity = tranferRef ?? new TransferEntity();
 		entity.id = transfer.id.value;
 		entity.origin_wallet = originWalletRef;
 		entity.target_wallet = targetWalletRef;

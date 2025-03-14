@@ -8,6 +8,8 @@ interface MonetaryProps {
 }
 
 export class Monetary extends ValueObject<MonetaryProps> {
+	public static readonly MAX_VALUE = 9999999999999.99;
+
 	get value(): number {
 		return this.props.value;
 	}
@@ -24,6 +26,12 @@ export class Monetary extends ValueObject<MonetaryProps> {
 		this.value -= value.value;
 	}
 
+	get toCents(): number {
+		const stringifyValue = this.value.toString();
+
+		return parseInt(stringifyValue.replace('.', ''));
+	}
+
 	private static hasUpToTwoDecimals(value: number) {
 		const parts = value.toString().split('.');
 
@@ -37,6 +45,10 @@ export class Monetary extends ValueObject<MonetaryProps> {
 	}
 
 	public static create(value: number): Either<Violation, Monetary> {
+		if (value > this.MAX_VALUE) {
+			return left(new InvalidFormatViolation());
+		}
+
 		if (!this.hasUpToTwoDecimals(value)) {
 			return left(new InvalidFormatViolation());
 		}

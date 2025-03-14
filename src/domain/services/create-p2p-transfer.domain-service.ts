@@ -1,4 +1,3 @@
-import { Either, left } from '@/shared/lib/either';
 import { Transfer } from '../transfer/transfer';
 import { Wallet } from '../wallet/wallet';
 import { Monetary } from '@/shared/domain/monetary';
@@ -11,26 +10,29 @@ import {
 import { UnauthorizedTransferError } from '@/shared/domain/errors/unauthorized-transfer.error';
 import { Inject, Injectable } from '@nestjs/common';
 import { InsufficientWalletTypePermissionsError } from '@/shared/domain/errors/insufficient-wallet-type-permissions.error';
-import { Error } from '@/shared/seedwork/error';
+import { IUnitOfWork, UNIT_OF_WORK } from '@/shared/seedwork/iunit-of-work';
+import { InternalServerError } from '@/shared/domain/errors/internal-server.error';
 
 @Injectable()
 export class CreateP2PTransferDomainService {
 	constructor(
 		@Inject(TRANSFER_AUTHORIZER_PROVIDER)
 		private readonly transferAuthorizer: ITransferAuthorizerProvider,
+		@Inject(UNIT_OF_WORK)
+		private readonly unitOfWork: IUnitOfWork,
 	) {}
 
 	public async execute(
 		origin: Wallet,
 		target: Wallet,
 		amount: Monetary,
-	): Promise<Either<Error, Transfer>> {
+	): Promise<Transfer> {
 		if (origin.type !== WalletType.COMMON) {
-			return left(new InsufficientWalletTypePermissionsError());
+			throw new InsufficientWalletTypePermissionsError();
 		}
 
 		if (origin.balance.value < amount.value) {
-			return left(new InsufficientFundsError());
+			throw new InsufficientFundsError();
 		}
 
 		const isAuthorized = await this.transferAuthorizer.execute(
@@ -40,18 +42,35 @@ export class CreateP2PTransferDomainService {
 		);
 
 		if (!isAuthorized) {
-			return left(new UnauthorizedTransferError());
+			throw new UnauthorizedTransferError();
 		}
 
 		origin.withdraw(amount);
 		target.deposit(amount);
 
-		const transfer = Transfer.create({
+		const transferOrError = Transfer.create({
 			originId: origin.id,
 			targetId: target.id,
 			amount,
 		});
 
-		return transfer;
+		if (transferOrError.isLeft()) {
+			throw transferOrError.value;
+		}
+
+		await this.unitOfWork.begin();
+
+		try {
+			await this.unitOfWork.transferRepository.save(transferOrError.value);
+			await this.unitOfWork.walletRepository.save(origin);
+			await this.unitOfWork.walletRepository.save(target);
+			await this.unitOfWork.commit();
+		} catch (error) {
+			await this.unitOfWork.rollback(error);
+
+			throw new InternalServerError();
+		}
+
+		return transferOrError.value;
 	}
 }
