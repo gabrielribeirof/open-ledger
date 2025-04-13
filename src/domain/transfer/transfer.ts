@@ -2,8 +2,9 @@ import { AggregateRoot } from '@/shared/seedwork/aggregate-root';
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
 import { Monetary } from '@/shared/domain/monetary';
 import { Either, left, right } from '@/shared/lib/either';
-import { TransferAmountMustBeGreaterThanZeroError } from '@/shared/domain/errors/transfer-amount-must-be-greater-than-zero.error';
+import { TransferAmountMustBeGreaterThanZeroError } from '@/shared/domain/_errors/transfer-amount-must-be-greater-than-zero.error';
 import { Error } from '@/shared/seedwork/error';
+import { TransferCreatedEvent } from './transfer-created.event';
 
 interface TransferProperties {
 	originId: UniqueIdentifier;
@@ -36,6 +37,12 @@ export class Transfer extends AggregateRoot<TransferProperties> {
 			return left(new TransferAmountMustBeGreaterThanZeroError());
 		}
 
-		return right(new Transfer(props, id));
+		const transfer = new Transfer(props, id);
+
+		if (!id) {
+			transfer.addDomainEvent(new TransferCreatedEvent(transfer));
+		}
+
+		return right(transfer);
 	}
 }
