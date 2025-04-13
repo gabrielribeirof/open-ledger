@@ -2,7 +2,7 @@ import * as bcrypt from 'bcrypt';
 import { ValueObject } from '@/shared/seedwork/value-object';
 import { Violation } from '@/shared/seedwork/violation';
 import { Either, left, right } from '@/shared/lib/either';
-import { BadLengthViolation } from '@/shared/domain/errors/violations/bad-length.violation';
+import { BadLengthViolation } from '@/shared/domain/_errors/violations/bad-length.violation';
 
 interface PasswordProperties {
 	value: string;

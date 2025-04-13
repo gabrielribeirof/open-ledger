@@ -1,9 +1,9 @@
 import { ValidationError } from '@nestjs/common';
-import { InvalidParametersError } from '../domain/errors/invalid-parameters.error';
-import { fromValidationErrorToViolation } from './from-validation-error-to-violation';
+import { InvalidParametersError } from '../domain/_errors/invalid-parameters.error';
+import { fromValidationErrorToViolationUtil } from './from-validation-error-to-violation.util';
 import { Violation } from '../seedwork/violation';
 
-export function parseValidationErrorsToErrors(
+export function parseValidationErrorsToErrorsUtil(
 	validationErrors: ValidationError[],
 ) {
 	const validationErrorsGroupedByProperty = validationErrors.reduce<
@@ -21,20 +21,22 @@ export function parseValidationErrorsToErrors(
 	const violationsGroupedByProperty = Object.entries(
 		validationErrorsGroupedByProperty,
 	).reduce<Record<string, Violation[]>>(
-		(previousValue, [currentPropery, currentErrors]) => {
-			if (!previousValue[currentPropery]) {
-				previousValue[currentPropery] = [];
-			}
-
+		(previousValue, [currentProperty, currentErrors]) => {
 			const constraints = currentErrors
 				.filter((error) => !!error.constraints)
-				.map((error) => error.constraints!);
+				.map((error) => error.constraints);
 
 			const violations = Object.keys(constraints).map((error) =>
-				fromValidationErrorToViolation(error),
+				fromValidationErrorToViolationUtil(error),
 			);
 
-			previousValue[currentPropery].push(...violations);
+			if (violations.length !== 0) {
+				if (!previousValue[currentProperty]) {
+					previousValue[currentProperty] = [];
+				}
+
+				previousValue[currentProperty].push(...violations);
+			}
 
 			return previousValue;
 		},

@@ -43,24 +43,31 @@ function violationsContructorToViolations(
 export class InvalidParametersError<
 	T extends Record<string, any>,
 > extends Error {
-	public violations: { [K in keyof T]?: Violation[] };
+	public violations?: { [K in keyof T]?: Violation[] };
 
 	constructor(violations: {
 		[K in keyof T]?: ViolationsConstructor;
 	}) {
 		super(ErrorCode.INVALID_PARAMETERS);
 
-		this.violations = Object.entries(violations).reduce(
+		const processedViolations = Object.entries(violations).reduce(
 			(previousValue, [key, value]) => {
 				if (value === undefined) return previousValue;
 				if (value instanceof Right) return previousValue;
 
+				const processedValue = violationsContructorToViolations(value);
+				if (processedValue.length === 0) return previousValue;
+
 				return {
 					...previousValue,
-					[key]: violationsContructorToViolations(value),
+					[key]: processedValue,
 				};
 			},
-			{},
+			{} as { [K in keyof T]?: Violation[] },
 		);
+
+		if (Object.keys(processedViolations).length > 0) {
+			this.violations = processedViolations;
+		}
 	}
 }

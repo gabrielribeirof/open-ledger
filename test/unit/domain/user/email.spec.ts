@@ -1,5 +1,5 @@
 import { Email } from '@/domain/user/email';
-import { InvalidFormatViolation } from '@/shared/domain/errors/violations/invalid-format.violation';
+import { InvalidFormatViolation } from '@/shared/domain/_errors/violations/invalid-format.violation';
 import { faker } from '@faker-js/faker';
 
 describe('Email', () => {

@@ -1,6 +1,6 @@
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
-import { InvalidParametersError } from '../shared/domain/errors/invalid-parameters.error';
-import { WalletNotFoundError } from '../shared/domain/errors/wallet-not-found.error';
+import { InvalidParametersError } from '../shared/domain/_errors/invalid-parameters.error';
+import { WalletNotFoundError } from '../shared/domain/_errors/wallet-not-found.error';
 import { Monetary } from '@/shared/domain/monetary';
 import { CreateP2PTransferDomainService } from '@/domain/services/create-p2p-transfer.domain-service';
 import { Inject, Injectable } from '@nestjs/common';

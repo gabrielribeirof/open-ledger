@@ -1,6 +1,6 @@
 import { Transfer } from '@/domain/transfer/transfer';
 import { Monetary } from '@/shared/domain/monetary';
-import { TransferAmountMustBeGreaterThanZeroError } from '@/shared/domain/errors/transfer-amount-must-be-greater-than-zero.error';
+import { TransferAmountMustBeGreaterThanZeroError } from '@/shared/domain/_errors/transfer-amount-must-be-greater-than-zero.error';
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
 
 describe('Transfer', () => {

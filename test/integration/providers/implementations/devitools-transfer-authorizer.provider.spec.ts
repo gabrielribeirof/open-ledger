@@ -3,7 +3,7 @@ import { ENVIROMENT_VARIABLES } from '@/enviroment-variables-schema';
 import { DevitoolsTransferAuthorizerProvider } from '@/providers/transfer-authorizer/devitools/devitools-transfer-authorizer.provider';
 import { DevitoolsAuthorizeResponse } from '@/providers/transfer-authorizer/devitools/schemas/devitools-authorize-response.schema';
 import { TRANSFER_AUTHORIZER_PROVIDER } from '@/providers/transfer-authorizer/itransfer-authorizer.provider';
-import { TransferAuthorizerProviderError } from '@/shared/domain/errors/transfer-authorizer-provider.error';
+import { TransferAuthorizerProviderError } from '@/shared/domain/_errors/transfer-authorizer-provider.error';
 import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as nock from 'nock';

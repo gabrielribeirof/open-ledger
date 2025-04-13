@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { parseValidationErrorsToErrors } from './shared/utils/parse-validation-errors-to-errors';
+import { parseValidationErrorsToErrorsUtil } from './shared/utils/parse-validation-errors-to-errors.util';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -12,7 +12,7 @@ async function bootstrap() {
 	app.useGlobalPipes(
 		new ValidationPipe({
 			exceptionFactory(errors) {
-				return parseValidationErrorsToErrors(errors);
+				return parseValidationErrorsToErrorsUtil(errors);
 			},
 		}),
 	);

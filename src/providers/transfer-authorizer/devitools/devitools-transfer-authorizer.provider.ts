@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ENVIROMENT_VARIABLES } from '@/enviroment-variables-schema';
-import { TransferAuthorizerProviderError } from '@/shared/domain/errors/transfer-authorizer-provider.error';
+import { TransferAuthorizerProviderError } from '@/shared/domain/_errors/transfer-authorizer-provider.error';
 import {
 	DevitoolsAuthorizeResponse,
 	devitoolsAuthorizeResponseSchema,

@@ -1,6 +1,6 @@
 import { cpf, cnpj } from 'cpf-cnpj-validator';
 import { Either, left, right } from '@/shared/lib/either';
-import { InvalidFormatViolation } from '@/shared/domain/errors/violations/invalid-format.violation';
+import { InvalidFormatViolation } from '@/shared/domain/_errors/violations/invalid-format.violation';
 import { Violation } from '@/shared/seedwork/violation';
 import { ValueObject } from '@/shared/seedwork/value-object';
 

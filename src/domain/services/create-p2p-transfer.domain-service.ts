@@ -1,17 +1,17 @@
 import { Transfer } from '../transfer/transfer';
 import { Wallet } from '../wallet/wallet';
 import { Monetary } from '@/shared/domain/monetary';
-import { InsufficientFundsError } from '../../shared/domain/errors/insufficient-funds.error';
+import { InsufficientFundsError } from '../../shared/domain/_errors/insufficient-funds.error';
 import { WalletType } from '../wallet/wallet-type';
 import {
 	ITransferAuthorizerProvider,
 	TRANSFER_AUTHORIZER_PROVIDER,
 } from '@/providers/transfer-authorizer/itransfer-authorizer.provider';
-import { UnauthorizedTransferError } from '@/shared/domain/errors/unauthorized-transfer.error';
+import { UnauthorizedTransferError } from '@/shared/domain/_errors/unauthorized-transfer.error';
 import { Inject, Injectable } from '@nestjs/common';
-import { InsufficientWalletTypePermissionsError } from '@/shared/domain/errors/insufficient-wallet-type-permissions.error';
+import { InsufficientWalletTypePermissionsError } from '@/shared/domain/_errors/insufficient-wallet-type-permissions.error';
 import { IUnitOfWork, UNIT_OF_WORK } from '@/shared/seedwork/iunit-of-work';
-import { InternalServerError } from '@/shared/domain/errors/internal-server.error';
+import { InternalServerError } from '@/shared/domain/_errors/internal-server.error';
 
 @Injectable()
 export class CreateP2PTransferDomainService {
