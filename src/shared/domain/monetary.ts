@@ -1,5 +1,6 @@
+import Decimal from 'decimal.js';
 import { ValueObject } from '../../shared/seedwork/value-object';
-import { InvalidFormatViolation } from '../domain/errors/violations/invalid-format.violation';
+import { InvalidFormatViolation } from './_errors/violations/invalid-format.violation';
 import { Either, left, right } from '../lib/either';
 import { Violation } from '../seedwork/violation';
 
@@ -14,22 +15,20 @@ export class Monetary extends ValueObject<MonetaryProps> {
 		return this.props.value;
 	}
 
+	get toCents(): number {
+		return Decimal.mul(this.value, 100).toNumber();
+	}
+
 	private set value(value: number) {
 		this.props.value = value;
 	}
 
 	public add(value: Monetary) {
-		this.value += value.value;
+		this.value = Decimal.add(this.value, value.value).toNumber();
 	}
 
 	public subtract(value: Monetary) {
-		this.value -= value.value;
-	}
-
-	get toCents(): number {
-		const stringifyValue = this.value.toString();
-
-		return parseInt(stringifyValue.replace('.', ''));
+		this.value = Decimal.sub(this.value, value.value).toNumber();
 	}
 
 	private static hasUpToTwoDecimals(value: number) {
