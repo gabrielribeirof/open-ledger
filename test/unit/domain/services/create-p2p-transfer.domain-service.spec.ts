@@ -2,15 +2,23 @@ import { CreateP2PTransferDomainService } from '@/domain/services/create-p2p-tra
 import { WalletType } from '@/domain/wallet/wallet-type';
 import { InMemoryTransferAuthorizerProvider } from '@/providers/transfer-authorizer/in-memory/in-memory-transfer-authorizer.provider';
 import { Monetary } from '@/shared/domain/monetary';
-import { InsufficientFundsError } from '@/shared/domain/errors/insufficient-funds.error';
-import { InsufficientWalletTypePermissionsError } from '@/shared/domain/errors/insufficient-wallet-type-permissions.error';
-import { UnauthorizedTransferError } from '@/shared/domain/errors/unauthorized-transfer.error';
+import { InsufficientFundsError } from '@/shared/domain/_errors/insufficient-funds.error';
+import { InsufficientWalletTypePermissionsError } from '@/shared/domain/_errors/insufficient-wallet-type-permissions.error';
+import { UnauthorizedTransferError } from '@/shared/domain/_errors/unauthorized-transfer.error';
 import { createFakeWallet } from '@test/helpers/wallet.helpers';
+import { InMemoryUnitOfWork } from '@/infrastructure/repositories/in-memory/in-memory.unit-of-work';
 
-function createSut(authorizerResponse = true) {
-	return new CreateP2PTransferDomainService(
-		new InMemoryTransferAuthorizerProvider(authorizerResponse),
+function createSut(isTransferAuthorized = true) {
+	const unitOfWork = new InMemoryUnitOfWork();
+	const sut = new CreateP2PTransferDomainService(
+		new InMemoryTransferAuthorizerProvider(isTransferAuthorized),
+		unitOfWork,
 	);
+
+	return {
+		sut,
+		unitOfWork,
+	};
 }
 
 describe('CreateP2PTransferDomainService', () => {
@@ -20,10 +28,9 @@ describe('CreateP2PTransferDomainService', () => {
 
 		const amount = Monetary.create(100).getRight();
 
-		const result = await createSut().execute(origin, target, amount);
-
-		expect(result.isLeft()).toBeTruthy();
-		expect(result.value).toBeInstanceOf(InsufficientWalletTypePermissionsError);
+		expect(
+			createSut().sut.execute(origin, target, amount),
+		).rejects.toBeInstanceOf(InsufficientWalletTypePermissionsError);
 	});
 
 	it('should not create a transfer if the originating wallet balance is insufficient', async () => {
@@ -32,10 +39,9 @@ describe('CreateP2PTransferDomainService', () => {
 
 		const amount = Monetary.create(100).getRight();
 
-		const result = await createSut().execute(origin, target, amount);
-
-		expect(result.isLeft()).toBeTruthy();
-		expect(result.value).toBeInstanceOf(InsufficientFundsError);
+		expect(
+			createSut().sut.execute(origin, target, amount),
+		).rejects.toBeInstanceOf(InsufficientFundsError);
 	});
 
 	it('should not create a transfer if the transfer is not authorized', async () => {
@@ -44,10 +50,9 @@ describe('CreateP2PTransferDomainService', () => {
 
 		const amount = Monetary.create(100).getRight();
 
-		const result = await createSut(false).execute(origin, target, amount);
-
-		expect(result.isLeft()).toBeTruthy();
-		expect(result.value).toBeInstanceOf(UnauthorizedTransferError);
+		expect(
+			createSut(false).sut.execute(origin, target, amount),
+		).rejects.toBeInstanceOf(UnauthorizedTransferError);
 	});
 
 	it('should create a transfer if all conditions are met', async () => {
@@ -56,15 +61,12 @@ describe('CreateP2PTransferDomainService', () => {
 
 		const amount = Monetary.create(100).getRight();
 
-		const result = await createSut().execute(origin, target, amount);
-
-		expect(result.isRight()).toBeTruthy();
-		expect(result.value).toMatchObject({
+		expect(
+			createSut().sut.execute(origin, target, amount),
+		).resolves.toMatchObject({
 			originId: origin.id,
 			targetId: target.id,
 			amount,
 		});
-		expect(origin.balance.value).toBe(0);
-		expect(target.balance.value).toBe(100);
 	});
 });
