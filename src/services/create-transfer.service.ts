@@ -2,7 +2,7 @@ import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
 import { InvalidParametersError } from '../shared/domain/_errors/invalid-parameters.error';
 import { WalletNotFoundError } from '../shared/domain/_errors/wallet-not-found.error';
 import { Monetary } from '@/shared/domain/monetary';
-import { CreateP2PTransferDomainService } from '@/domain/services/create-p2p-transfer.domain-service';
+import { CreateTransferDomainService } from '@/domain/services/create-transfer.domain-service';
 import { Inject, Injectable } from '@nestjs/common';
 import {
 	IWalletRepository,
@@ -10,27 +10,27 @@ import {
 } from '@/domain/wallet/iwallet.repository';
 import { Transfer } from '@/domain/transfer/transfer';
 
-export interface CreateP2PTransferServiceInput {
+export interface CreateTransferServiceInput {
 	origin_id: string;
 	target_id: string;
 	amount: number;
 }
 
 @Injectable()
-export class CreateP2PTransferService {
+export class CreateTransferService {
 	constructor(
-		private readonly createP2PTransferDomainService: CreateP2PTransferDomainService,
+		private readonly createTransferDomainService: CreateTransferDomainService,
 		@Inject(WALLET_REPOSITORY)
 		private readonly walletRepository: IWalletRepository,
 	) {}
 
-	async execute(input: CreateP2PTransferServiceInput): Promise<Transfer> {
+	async execute(input: CreateTransferServiceInput): Promise<Transfer> {
 		const originId = UniqueIdentifier.create(input.origin_id);
 		const targetId = UniqueIdentifier.create(input.target_id);
 		const amount = Monetary.create(input.amount);
 
 		if (amount.isLeft() || originId.isLeft() || targetId.isLeft()) {
-			throw new InvalidParametersError<CreateP2PTransferServiceInput>({
+			throw new InvalidParametersError<CreateTransferServiceInput>({
 				origin_id: originId,
 				target_id: targetId,
 				amount,
@@ -49,7 +49,7 @@ export class CreateP2PTransferService {
 			throw new WalletNotFoundError();
 		}
 
-		const transfer = await this.createP2PTransferDomainService.execute(
+		const transfer = await this.createTransferDomainService.execute(
 			origin,
 			target,
 			amount.value,

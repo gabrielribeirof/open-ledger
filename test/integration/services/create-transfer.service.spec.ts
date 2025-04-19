@@ -1,11 +1,11 @@
-import { CreateP2PTransferDomainService } from '@/domain/services/create-p2p-transfer.domain-service';
+import { CreateTransferDomainService } from '@/domain/services/create-transfer.domain-service';
 import { InMemoryWalletRepository } from '@/infrastructure/repositories/in-memory/in-memory-wallet.repository';
 import { InMemoryUnitOfWork } from '@/infrastructure/repositories/in-memory/in-memory.unit-of-work';
 import { InMemoryTransferAuthorizerProvider } from '@/providers/transfer-authorizer/in-memory/in-memory-transfer-authorizer.provider';
 import {
-	CreateP2PTransferServiceInput,
-	CreateP2PTransferService,
-} from '@/services/create-p2p-transfer.service';
+	CreateTransferServiceInput,
+	CreateTransferService,
+} from '@/services/create-transfer.service';
 import { InvalidParametersError } from '@/shared/domain/_errors/invalid-parameters.error';
 import { InvalidFormatViolation } from '@/shared/domain/_errors/violations/invalid-format.violation';
 import { WalletNotFoundError } from '@/shared/domain/_errors/wallet-not-found.error';
@@ -13,15 +13,15 @@ import { createFakeWallet } from '@test/helpers/wallet.helpers';
 import { v4 } from 'uuid';
 
 const unitOfWork = new InMemoryUnitOfWork();
-const domainService = new CreateP2PTransferDomainService(
+const domainService = new CreateTransferDomainService(
 	new InMemoryTransferAuthorizerProvider(true),
 	unitOfWork,
 );
 const walletRepository = new InMemoryWalletRepository();
 
-const sut = new CreateP2PTransferService(domainService, walletRepository);
+const sut = new CreateTransferService(domainService, walletRepository);
 
-describe('CreateP2PTransferService', () => {
+describe('CreateTransferDomainService', () => {
 	beforeEach(() => {
 		walletRepository.wallet.clear();
 	});
@@ -34,7 +34,7 @@ describe('CreateP2PTransferService', () => {
 		});
 
 		expect(result).rejects.toEqual(
-			new InvalidParametersError<CreateP2PTransferServiceInput>({
+			new InvalidParametersError<CreateTransferServiceInput>({
 				origin_id: [new InvalidFormatViolation()],
 				target_id: [new InvalidFormatViolation()],
 				amount: [new InvalidFormatViolation()],

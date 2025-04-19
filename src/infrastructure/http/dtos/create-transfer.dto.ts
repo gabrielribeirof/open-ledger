@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsUUID, Max } from 'class-validator';
+import { IsNumber, IsUUID } from 'class-validator';
 
 export class CreateTransferDTO {
 	@ApiProperty()

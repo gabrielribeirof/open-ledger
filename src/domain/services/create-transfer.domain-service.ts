@@ -14,7 +14,7 @@ import { IUnitOfWork, UNIT_OF_WORK } from '@/shared/seedwork/iunit-of-work';
 import { InternalServerError } from '@/shared/domain/_errors/internal-server.error';
 
 @Injectable()
-export class CreateP2PTransferDomainService {
+export class CreateTransferDomainService {
 	constructor(
 		@Inject(TRANSFER_AUTHORIZER_PROVIDER)
 		private readonly transferAuthorizer: ITransferAuthorizerProvider,
