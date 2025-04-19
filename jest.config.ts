@@ -14,6 +14,7 @@ const config: Config.InitialOptions = {
 	}),
 	collectCoverageFrom: [
 		'src/**/*.ts',
+		'!src/main.ts',
 		'!**/domain/**/i*repository.ts',
 		'!**/*.module.ts',
 	],
