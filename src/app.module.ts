@@ -16,14 +16,27 @@ import { TransferEntity } from './infrastructure/mikro-orm/entities/transfer.ent
 import { TransfersController } from './infrastructure/http/controllers/transfers.controller';
 import { HttpModule } from '@nestjs/axios';
 import { TRANSFER_AUTHORIZER_PROVIDER } from './providers/transfer-authorizer/itransfer-authorizer.provider';
-import { findTransferAuthorizerProviders } from './providers/transfer-authorizer';
-import { getConfigOrThrow } from './shared/utils/get-config-or-throw.util';
+import { getConfigOrThrowUtil } from './shared/utils/get-config-or-throw.util';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { UNIT_OF_WORK } from './shared/seedwork/iunit-of-work';
 import { MikroOrmUnitOfWork } from './infrastructure/repositories/mikro-orm/mikro-orm.unit-of-work';
 import { MikroOrmTransferRepository } from './infrastructure/repositories/mikro-orm/mikro-orm-transfer.repository';
 import { MikroOrmWalletRepository } from './infrastructure/repositories/mikro-orm/mikro-orm-wallet.repository';
 import { NativeErrorFilter } from './shared/filters/native-error.filter';
+import { InMemoryTransferAuthorizerProvider } from './providers/transfer-authorizer/in-memory/in-memory-transfer-authorizer.provider';
+import { DevitoolsTransferAuthorizerProvider } from './providers/transfer-authorizer/devitools/devitools-transfer-authorizer.provider';
+import { ProviderNotFoundError } from './shared/domain/_errors/provider-not-found.error';
+
+function findTransferAuthorizerProviders(type: string) {
+	switch (type) {
+		case 'in-memory':
+			return InMemoryTransferAuthorizerProvider;
+		case 'devitools':
+			return DevitoolsTransferAuthorizerProvider;
+		default:
+			throw new ProviderNotFoundError();
+	}
+}
 
 @Module({
 	imports: [
@@ -57,7 +70,7 @@ import { NativeErrorFilter } from './shared/filters/native-error.filter';
 		{
 			provide: TRANSFER_AUTHORIZER_PROVIDER,
 			useClass: findTransferAuthorizerProviders(
-				getConfigOrThrow(
+				getConfigOrThrowUtil(
 					ENVIROMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_PROVIDER,
 				),
 			),
