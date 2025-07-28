@@ -1,7 +1,7 @@
 FROM node:lts-alpine
 RUN apk --no-cache add git
 
-WORKDIR /wallet
+WORKDIR /core-app
 COPY package.json .
 COPY yarn.lock .
 

@@ -3,7 +3,7 @@ import { ITransferAuthorizerProvider } from '../itransfer-authorizer.provider';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { ENVIROMENT_VARIABLES } from '@/enviroment-variables-schema';
+import { ENVIRONMENT_VARIABLES } from '@/environment-variables-schema';
 import { TransferAuthorizerProviderError } from '@/shared/domain/_errors/transfer-authorizer-provider.error';
 import {
 	DevitoolsAuthorizeResponse,
@@ -27,7 +27,7 @@ export class DevitoolsTransferAuthorizerProvider
 			DevitoolsTransferAuthorizerProvider.logger,
 			httpService,
 			configService.getOrThrow(
-				ENVIROMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL,
+				ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL,
 			),
 		);
 	}

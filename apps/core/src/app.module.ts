@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import {
-	ENVIROMENT_VARIABLES,
-	enviromentVariablesSchema,
-} from './enviroment-variables-schema';
+	ENVIRONMENT_VARIABLES,
+	environmentVariablesSchema,
+} from './environment-variables-schema';
 import { APP_FILTER } from '@nestjs/core';
 import { ErrorFilter } from './shared/filters/error.filter';
 import { TRANSFER_REPOSITORY } from './domain/transfer/itransfer.repository';
@@ -43,7 +43,7 @@ function findTransferAuthorizerProviders(type: string) {
 		ConfigModule.forRoot({
 			isGlobal: true,
 			ignoreEnvFile: false,
-			validationSchema: enviromentVariablesSchema,
+			validationSchema: environmentVariablesSchema,
 		}),
 		MikroOrmModule.forRoot({
 			autoLoadEntities: true,
@@ -71,7 +71,7 @@ function findTransferAuthorizerProviders(type: string) {
 			provide: TRANSFER_AUTHORIZER_PROVIDER,
 			useClass: findTransferAuthorizerProviders(
 				getConfigOrThrowUtil(
-					ENVIROMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_PROVIDER,
+					ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_PROVIDER,
 				),
 			),
 		},

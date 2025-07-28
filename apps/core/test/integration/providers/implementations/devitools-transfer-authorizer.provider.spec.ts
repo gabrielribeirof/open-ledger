@@ -1,5 +1,5 @@
 import { AppModule } from '@/app.module';
-import { ENVIROMENT_VARIABLES } from '@/enviroment-variables-schema';
+import { ENVIRONMENT_VARIABLES } from '@/environment-variables-schema';
 import { DevitoolsTransferAuthorizerProvider } from '@/providers/transfer-authorizer/devitools/devitools-transfer-authorizer.provider';
 import { DevitoolsAuthorizeResponse } from '@/providers/transfer-authorizer/devitools/schemas/devitools-authorize-response.schema';
 import { TRANSFER_AUTHORIZER_PROVIDER } from '@/providers/transfer-authorizer/itransfer-authorizer.provider';
@@ -38,7 +38,7 @@ describe('DevitoolsTransferAuthorizerProvider', () => {
 		const configService = testingModule.get(ConfigService);
 
 		url = configService.getOrThrow(
-			ENVIROMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL,
+			ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL,
 		);
 	});
 

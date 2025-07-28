@@ -5,4 +5,4 @@ migrate:
 	@docker compose up migrate
 
 up:
-	@docker compose up api
+	@docker compose up app

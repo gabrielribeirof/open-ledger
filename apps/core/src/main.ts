@@ -19,7 +19,7 @@ async function bootstrap() {
 
 	const swaggerConfig = new DocumentBuilder()
 		.setTitle(`Wallet API (${configService.get('NODE_ENV')})`)
-		.setVersion('1.0')
+		.setVersion('0.1')
 		.build();
 
 	SwaggerModule.setup(

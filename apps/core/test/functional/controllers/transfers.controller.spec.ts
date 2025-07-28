@@ -12,7 +12,7 @@ import { UserEntity } from '@/infrastructure/mikro-orm/entities/user.entity';
 import { TransferEntity } from '@/infrastructure/mikro-orm/entities/transfer.entity';
 import { WalletType } from '@/domain/wallet/wallet-type';
 import * as nock from 'nock';
-import { ENVIROMENT_VARIABLES } from '@/enviroment-variables-schema';
+import { ENVIRONMENT_VARIABLES } from '@/environment-variables-schema';
 import { ConfigService } from '@nestjs/config';
 import { DevitoolsAuthorizeResponse } from '@/providers/transfer-authorizer/devitools/schemas/devitools-authorize-response.schema';
 
@@ -40,7 +40,7 @@ describe('TransfersController', () => {
 		const configService = testingModule.get(ConfigService);
 
 		transferAuthorizerService = configService.getOrThrow(
-			ENVIROMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL,
+			ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL,
 		);
 
 		nock(transferAuthorizerService)
