@@ -5,11 +5,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug WalletAPI",
+      "name": "Debug OpenLedger API",
       "type": "node",
       "request": "attach",
       "address": "127.0.0.1",
-      "port": 9229,
+      "port": 9229
     }
   ]
 }
