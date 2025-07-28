@@ -1,15 +1,15 @@
 import { Transfer } from '../transfer/transfer';
-import { Wallet } from '../wallet/wallet';
+import { Account } from '../account/account';
 import { Monetary } from '@/shared/domain/monetary';
 import { InsufficientFundsError } from '../../shared/domain/_errors/insufficient-funds.error';
-import { WalletType } from '../wallet/wallet-type';
+import { AccountType } from '../account/account-type';
 import {
 	ITransferAuthorizerProvider,
 	TRANSFER_AUTHORIZER_PROVIDER,
 } from '@/providers/transfer-authorizer/itransfer-authorizer.provider';
 import { UnauthorizedTransferError } from '@/shared/domain/_errors/unauthorized-transfer.error';
 import { Inject, Injectable } from '@nestjs/common';
-import { InsufficientWalletTypePermissionsError } from '@/shared/domain/_errors/insufficient-wallet-type-permissions.error';
+import { InsufficientAccountTypePermissionsError } from '@/shared/domain/_errors/insufficient-account-type-permissions.error';
 import { IUnitOfWork, UNIT_OF_WORK } from '@/shared/seedwork/iunit-of-work';
 import { InternalServerError } from '@/shared/domain/_errors/internal-server.error';
 
@@ -23,12 +23,12 @@ export class CreateTransferDomainService {
 	) {}
 
 	public async execute(
-		origin: Wallet,
-		target: Wallet,
+		origin: Account,
+		target: Account,
 		amount: Monetary,
 	): Promise<Transfer> {
-		if (origin.type !== WalletType.COMMON) {
-			throw new InsufficientWalletTypePermissionsError();
+		if (origin.type !== AccountType.COMMON) {
+			throw new InsufficientAccountTypePermissionsError();
 		}
 
 		if (origin.balance.value < amount.value) {
@@ -62,8 +62,8 @@ export class CreateTransferDomainService {
 
 		try {
 			await this.unitOfWork.transferRepository.save(transferOrError.value);
-			await this.unitOfWork.walletRepository.save(origin);
-			await this.unitOfWork.walletRepository.save(target);
+			await this.unitOfWork.accountRepository.save(origin);
+			await this.unitOfWork.accountRepository.save(target);
 			await this.unitOfWork.commit();
 		} catch (error) {
 			await this.unitOfWork.rollback(error);

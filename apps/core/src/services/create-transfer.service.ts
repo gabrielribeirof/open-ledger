@@ -1,13 +1,13 @@
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
 import { InvalidParametersError } from '../shared/domain/_errors/invalid-parameters.error';
-import { WalletNotFoundError } from '../shared/domain/_errors/wallet-not-found.error';
+import { AccountNotFoundError } from '../shared/domain/_errors/account-not-found.error';
 import { Monetary } from '@/shared/domain/monetary';
 import { CreateTransferDomainService } from '@/domain/services/create-transfer.domain-service';
 import { Inject, Injectable } from '@nestjs/common';
 import {
-	IWalletRepository,
-	WALLET_REPOSITORY,
-} from '@/domain/wallet/iwallet.repository';
+	IAccountRepository,
+	ACCOUNT_REPOSITORY,
+} from '@/domain/account/iaccount.repository';
 import { Transfer } from '@/domain/transfer/transfer';
 
 export interface CreateTransferServiceInput {
@@ -20,8 +20,8 @@ export interface CreateTransferServiceInput {
 export class CreateTransferService {
 	constructor(
 		private readonly createTransferDomainService: CreateTransferDomainService,
-		@Inject(WALLET_REPOSITORY)
-		private readonly walletRepository: IWalletRepository,
+		@Inject(ACCOUNT_REPOSITORY)
+		private readonly accountRepository: IAccountRepository,
 	) {}
 
 	async execute(input: CreateTransferServiceInput): Promise<Transfer> {
@@ -37,16 +37,16 @@ export class CreateTransferService {
 			});
 		}
 
-		const origin = await this.walletRepository.findById(originId.value);
+		const origin = await this.accountRepository.findById(originId.value);
 
 		if (!origin) {
-			throw new WalletNotFoundError();
+			throw new AccountNotFoundError();
 		}
 
-		const target = await this.walletRepository.findById(targetId.value);
+		const target = await this.accountRepository.findById(targetId.value);
 
 		if (!target) {
-			throw new WalletNotFoundError();
+			throw new AccountNotFoundError();
 		}
 
 		const transfer = await this.createTransferDomainService.execute(

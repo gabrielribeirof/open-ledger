@@ -10,18 +10,18 @@ import {
 } from '@mikro-orm/core';
 import { UserEntity } from './user.entity';
 
-export enum WalletEntityType {
+export enum AccountEntityType {
 	COMMON = 'COMMON',
 	MERCHANT = 'MERCHANT',
 }
 
-@Entity({ tableName: 'wallets' })
-export class WalletEntity {
+@Entity({ tableName: 'accounts' })
+export class AccountEntity {
 	@PrimaryKey({ type: 'uuid' })
 	id!: string;
 
-	@Enum(() => WalletEntityType)
-	type!: WalletEntityType;
+	@Enum(() => AccountEntityType)
+	type!: AccountEntityType;
 
 	// Max value = 999999999999999 OR 9 999 999 999 999.99
 	@Property({ type: new DecimalType('number'), precision: 15, scale: 2 })
@@ -33,7 +33,7 @@ export class WalletEntity {
 	@Property({ onUpdate: () => new Date() })
 	updated_at: Date & Opt = new Date();
 
-	@OneToOne(() => UserEntity, (user) => user.wallet, {
+	@OneToOne(() => UserEntity, (user) => user.account, {
 		owner: true,
 		fieldName: 'user_id',
 	})

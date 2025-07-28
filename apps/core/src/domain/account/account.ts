@@ -1,16 +1,16 @@
 import { AggregateRoot } from '@/shared/seedwork/aggregate-root';
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
-import { WalletType } from './wallet-type';
+import { AccountType } from './account-type';
 import { Monetary } from '@/shared/domain/monetary';
 
-interface WalletProperties {
-	type: WalletType;
+interface AccountProperties {
+	type: AccountType;
 	userId: UniqueIdentifier;
 	balance: Monetary;
 	version: number;
 }
 
-export class Wallet extends AggregateRoot<WalletProperties> {
+export class Account extends AggregateRoot<AccountProperties> {
 	get type() {
 		return this.props.type;
 	}
@@ -35,11 +35,14 @@ export class Wallet extends AggregateRoot<WalletProperties> {
 		this.props.balance.subtract(amount);
 	}
 
-	private constructor(props: WalletProperties, id?: UniqueIdentifier) {
+	private constructor(props: AccountProperties, id?: UniqueIdentifier) {
 		super(props, id);
 	}
 
-	public static create(props: WalletProperties, id?: UniqueIdentifier): Wallet {
-		return new Wallet(props, id);
+	public static create(
+		props: AccountProperties,
+		id?: UniqueIdentifier,
+	): Account {
+		return new Account(props, id);
 	}
 }

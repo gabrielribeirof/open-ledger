@@ -1,7 +1,7 @@
 import { Transfer } from '@/domain/transfer/transfer';
 import { TransferDTO } from '../dtos/entities/transfer.dto';
 import { TransferEntity } from '@/infrastructure/mikro-orm/entities/transfer.entity';
-import { WalletEntity } from '@/infrastructure/mikro-orm/entities/wallet.entity';
+import { AccountEntity } from '@/infrastructure/mikro-orm/entities/account.entity';
 
 export class TransferMapper {
 	static toDTO(transfer: Transfer): TransferDTO {
@@ -12,14 +12,14 @@ export class TransferMapper {
 
 	static toPersistence(
 		transfer: Transfer,
-		originWalletRef: WalletEntity,
-		targetWalletRef: WalletEntity,
+		originAccountRef: AccountEntity,
+		targetAccountRef: AccountEntity,
 		tranferRef?: TransferEntity,
 	): TransferEntity {
 		const entity = tranferRef ?? new TransferEntity();
 		entity.id = transfer.id.value;
-		entity.origin_wallet = originWalletRef;
-		entity.target_wallet = targetWalletRef;
+		entity.origin_account = originAccountRef;
+		entity.target_account = targetAccountRef;
 		entity.amount = transfer.amount.value;
 		return entity;
 	}

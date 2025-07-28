@@ -6,7 +6,7 @@ import {
 	PrimaryKey,
 	Property,
 } from '@mikro-orm/core';
-import { WalletEntity } from './wallet.entity';
+import { AccountEntity } from './account.entity';
 
 @Entity({ tableName: 'transfers' })
 export class TransferEntity {
@@ -20,9 +20,9 @@ export class TransferEntity {
 	@Property()
 	created_at: Date & Opt = new Date();
 
-	@ManyToOne(() => WalletEntity, { fieldName: 'origin_id' })
-	origin_wallet!: WalletEntity;
+	@ManyToOne(() => AccountEntity, { fieldName: 'origin_id' })
+	origin_account!: AccountEntity;
 
-	@ManyToOne(() => WalletEntity, { fieldName: 'target_id' })
-	target_wallet!: WalletEntity;
+	@ManyToOne(() => AccountEntity, { fieldName: 'target_id' })
+	target_account!: AccountEntity;
 }

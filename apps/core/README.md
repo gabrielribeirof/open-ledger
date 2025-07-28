@@ -1,4 +1,4 @@
-## Wallet API
+## OpenLedger API
 
 ## Table of Contents
 

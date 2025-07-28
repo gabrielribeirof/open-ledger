@@ -3,22 +3,22 @@ import { ITransferRepository } from '@/domain/transfer/itransfer.repository';
 import { Transfer } from '@/domain/transfer/transfer';
 import { TransferMapper } from '@/infrastructure/http/mappers/transfer-mapper';
 import { Injectable } from '@nestjs/common';
-import { WalletEntity } from '@/infrastructure/mikro-orm/entities/wallet.entity';
+import { AccountEntity } from '@/infrastructure/mikro-orm/entities/account.entity';
 
 @Injectable()
 export class MikroOrmTransferRepository implements ITransferRepository {
 	constructor(private em: EntityManager) {}
 
 	async save(transfer: Transfer): Promise<void> {
-		const originWalletRef = this.em.getReference(
-			WalletEntity,
+		const originAccountRef = this.em.getReference(
+			AccountEntity,
 			transfer.originId.value,
 		);
-		const targetWalletRef = this.em.getReference(
-			WalletEntity,
+		const targetAccountRef = this.em.getReference(
+			AccountEntity,
 			transfer.targetId.value,
 		);
 
-		TransferMapper.toPersistence(transfer, originWalletRef, targetWalletRef);
+		TransferMapper.toPersistence(transfer, originAccountRef, targetAccountRef);
 	}
 }

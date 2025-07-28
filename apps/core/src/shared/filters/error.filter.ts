@@ -24,10 +24,10 @@ export class ErrorFilter implements ExceptionFilter {
 				case ErrorCode.INSUFFICIENT_FUNDS:
 				case ErrorCode.UNAUTHORIZED_TRANSFER:
 					return HttpStatus.BAD_REQUEST;
-				case ErrorCode.WALLET_NOT_FOUND:
+				case ErrorCode.ACCOUNT_NOT_FOUND:
 					return HttpStatus.NOT_FOUND;
 				case ErrorCode.TRANSFER_AUTHORIZER_PROVIDER_ERROR:
-				case ErrorCode.INSUFFICIENT_WALLET_TYPE_PERMISSIONS:
+				case ErrorCode.INSUFFICIENT_ACCOUNT_TYPE_PERMISSIONS:
 					return HttpStatus.FORBIDDEN;
 				case ErrorCode.TRANSFER_AMOUNT_MUST_BE_GREATER_THAN_ZERO:
 					return HttpStatus.UNPROCESSABLE_ENTITY;

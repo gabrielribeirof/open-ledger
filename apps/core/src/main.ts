@@ -18,7 +18,7 @@ async function bootstrap() {
 	);
 
 	const swaggerConfig = new DocumentBuilder()
-		.setTitle(`Wallet API (${configService.get('NODE_ENV')})`)
+		.setTitle(`OpenLedger API (${configService.get('NODE_ENV')})`)
 		.setVersion('0.1')
 		.build();
 

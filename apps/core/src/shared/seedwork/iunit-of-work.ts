@@ -1,9 +1,9 @@
 import { ITransferRepository } from '@/domain/transfer/itransfer.repository';
-import { IWalletRepository } from '@/domain/wallet/iwallet.repository';
+import { IAccountRepository } from '@/domain/account/iaccount.repository';
 
 export interface IUnitOfWork {
 	transferRepository: ITransferRepository;
-	walletRepository: IWalletRepository;
+	accountRepository: IAccountRepository;
 	begin(): Promise<void>;
 	commit(): Promise<void>;
 	rollback(error: unknown): Promise<void>;

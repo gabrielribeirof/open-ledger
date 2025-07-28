@@ -1,8 +1,8 @@
 import { Error } from '../../seedwork/error';
 import { ErrorCode } from '../../seedwork/error-code';
 
-export class WalletNotFoundError extends Error {
+export class AccountNotFoundError extends Error {
 	constructor() {
-		super(ErrorCode.WALLET_NOT_FOUND);
+		super(ErrorCode.ACCOUNT_NOT_FOUND);
 	}
 }

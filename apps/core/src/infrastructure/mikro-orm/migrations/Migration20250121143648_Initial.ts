@@ -7,10 +7,10 @@ export class Migration20250121143648_Initial extends Migration {
 		);
 
 		this.addSql(
-			`create table "wallets" ("id" uuid not null, "type" text check ("type" in ('COMMON', 'MERCHANT')) not null, "balance" int not null, "version" int not null, "updated_at" timestamptz not null, "user_id" uuid not null, constraint "wallets_pkey" primary key ("id"));`,
+			`create table "accounts" ("id" uuid not null, "type" text check ("type" in ('COMMON', 'MERCHANT')) not null, "balance" int not null, "version" int not null, "updated_at" timestamptz not null, "user_id" uuid not null, constraint "accounts_pkey" primary key ("id"));`,
 		);
 		this.addSql(
-			`alter table "wallets" add constraint "wallets_user_id_unique" unique ("user_id");`,
+			`alter table "accounts" add constraint "accounts_user_id_unique" unique ("user_id");`,
 		);
 
 		this.addSql(
@@ -18,14 +18,14 @@ export class Migration20250121143648_Initial extends Migration {
 		);
 
 		this.addSql(
-			`alter table "wallets" add constraint "wallets_user_id_foreign" foreign key ("user_id") references "users" ("id") on update cascade;`,
+			`alter table "accounts" add constraint "accounts_user_id_foreign" foreign key ("user_id") references "users" ("id") on update cascade;`,
 		);
 
 		this.addSql(
-			`alter table "transfers" add constraint "transfers_origin_id_foreign" foreign key ("origin_id") references "wallets" ("id") on update cascade;`,
+			`alter table "transfers" add constraint "transfers_origin_id_foreign" foreign key ("origin_id") references "accounts" ("id") on update cascade;`,
 		);
 		this.addSql(
-			`alter table "transfers" add constraint "transfers_target_id_foreign" foreign key ("target_id") references "wallets" ("id") on update cascade;`,
+			`alter table "transfers" add constraint "transfers_target_id_foreign" foreign key ("target_id") references "accounts" ("id") on update cascade;`,
 		);
 	}
 }

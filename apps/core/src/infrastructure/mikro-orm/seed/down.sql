@@ -1,5 +1,5 @@
 DELETE FROM transfers;
 
-DELETE FROM wallets;
+DELETE FROM accounts;
 
 DELETE FROM users;

@@ -3,14 +3,14 @@ import { AppModule } from '@/app.module';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { EntityManager } from '@mikro-orm/postgresql';
-import { WalletMapper } from '@/infrastructure/http/mappers/wallet.mapper';
+import { AccountMapper } from '@/infrastructure/http/mappers/account.mapper';
 import { createFakeUser } from '@test/helpers/user.helpers';
-import { createFakeWallet } from '@test/helpers/wallet.helpers';
+import { createFakeAccount } from '@test/helpers/account.helpers';
 import { UserMapper } from '@/infrastructure/http/mappers/user-mapper';
-import { WalletEntity } from '@/infrastructure/mikro-orm/entities/wallet.entity';
+import { AccountEntity } from '@/infrastructure/mikro-orm/entities/account.entity';
 import { UserEntity } from '@/infrastructure/mikro-orm/entities/user.entity';
 import { TransferEntity } from '@/infrastructure/mikro-orm/entities/transfer.entity';
-import { WalletType } from '@/domain/wallet/wallet-type';
+import { AccountType } from '@/domain/account/account-type';
 import * as nock from 'nock';
 import { ENVIRONMENT_VARIABLES } from '@/environment-variables-schema';
 import { ConfigService } from '@nestjs/config';
@@ -57,10 +57,10 @@ describe('TransfersController', () => {
 
 	afterEach(async () => {
 		const transferQb = entityManager.createQueryBuilder(TransferEntity);
-		const walletQb = entityManager.createQueryBuilder(WalletEntity);
+		const accountQb = entityManager.createQueryBuilder(AccountEntity);
 		const userQb = entityManager.createQueryBuilder(UserEntity);
 		await transferQb.delete();
-		await walletQb.delete();
+		await accountQb.delete();
 		await userQb.delete();
 	});
 
@@ -68,10 +68,10 @@ describe('TransfersController', () => {
 		const originUser = createFakeUser();
 		const targetUser = createFakeUser();
 
-		const originWallet = createFakeWallet({ userId: originUser.id.value });
-		const targetWallet = createFakeWallet({
+		const originAccount = createFakeAccount({ userId: originUser.id.value });
+		const targetAccount = createFakeAccount({
 			userId: targetUser.id.value,
-			type: WalletType.MERCHANT,
+			type: AccountType.MERCHANT,
 		});
 
 		await entityManager.insertMany([
@@ -79,12 +79,12 @@ describe('TransfersController', () => {
 			UserMapper.toPersistence(targetUser),
 		]);
 		await entityManager.insertMany([
-			WalletMapper.toPersistence(
-				originWallet,
+			AccountMapper.toPersistence(
+				originAccount,
 				entityManager.getReference(UserEntity, originUser.id.value),
 			),
-			WalletMapper.toPersistence(
-				targetWallet,
+			AccountMapper.toPersistence(
+				targetAccount,
 				entityManager.getReference(UserEntity, targetUser.id.value),
 			),
 		]);
@@ -93,8 +93,8 @@ describe('TransfersController', () => {
 			.post('/transfers')
 			.send({
 				amount: 100,
-				origin_id: originWallet.id.value,
-				target_id: targetWallet.id.value,
+				origin_id: originAccount.id.value,
+				target_id: targetAccount.id.value,
 			});
 
 		expect(statusCode).toBe(201);

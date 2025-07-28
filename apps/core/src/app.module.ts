@@ -7,10 +7,10 @@ import {
 import { APP_FILTER } from '@nestjs/core';
 import { ErrorFilter } from './shared/filters/error.filter';
 import { TRANSFER_REPOSITORY } from './domain/transfer/itransfer.repository';
-import { WALLET_REPOSITORY } from './domain/wallet/iwallet.repository';
+import { ACCOUNT_REPOSITORY } from './domain/account/iaccount.repository';
 import { CreateTransferService } from './services/create-transfer.service';
 import { UserEntity } from './infrastructure/mikro-orm/entities/user.entity';
-import { WalletEntity } from './infrastructure/mikro-orm/entities/wallet.entity';
+import { AccountEntity } from './infrastructure/mikro-orm/entities/account.entity';
 import { TransferEntity } from './infrastructure/mikro-orm/entities/transfer.entity';
 import { TransfersController } from './infrastructure/http/controllers/transfers.controller';
 import { HttpModule } from '@nestjs/axios';
@@ -20,7 +20,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { UNIT_OF_WORK } from './shared/seedwork/iunit-of-work';
 import { MikroOrmUnitOfWork } from './infrastructure/repositories/mikro-orm/mikro-orm.unit-of-work';
 import { MikroOrmTransferRepository } from './infrastructure/repositories/mikro-orm/mikro-orm-transfer.repository';
-import { MikroOrmWalletRepository } from './infrastructure/repositories/mikro-orm/mikro-orm-wallet.repository';
+import { MikroOrmAccountRepository } from './infrastructure/repositories/mikro-orm/mikro-orm-account.repository';
 import { NativeErrorFilter } from './shared/filters/native-error.filter';
 import { InMemoryTransferAuthorizerProvider } from './providers/transfer-authorizer/in-memory/in-memory-transfer-authorizer.provider';
 import { DevitoolsTransferAuthorizerProvider } from './providers/transfer-authorizer/devitools/devitools-transfer-authorizer.provider';
@@ -49,7 +49,7 @@ function findTransferAuthorizerProviders(type: string) {
 			autoLoadEntities: true,
 			forceUtcTimezone: true,
 		}),
-		MikroOrmModule.forFeature([UserEntity, WalletEntity, TransferEntity]),
+		MikroOrmModule.forFeature([UserEntity, AccountEntity, TransferEntity]),
 		HttpModule,
 	],
 	providers: [
@@ -58,8 +58,8 @@ function findTransferAuthorizerProviders(type: string) {
 			useClass: MikroOrmTransferRepository,
 		},
 		{
-			provide: WALLET_REPOSITORY,
-			useClass: MikroOrmWalletRepository,
+			provide: ACCOUNT_REPOSITORY,
+			useClass: MikroOrmAccountRepository,
 		},
 		{
 			provide: UNIT_OF_WORK,

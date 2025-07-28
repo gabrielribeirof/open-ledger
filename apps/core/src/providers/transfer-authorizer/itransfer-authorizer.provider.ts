@@ -1,10 +1,10 @@
-import { Wallet } from '@/domain/wallet/wallet';
+import { Account } from '@/domain/account/account';
 import { Monetary } from '@/shared/domain/monetary';
 
 export interface ITransferAuthorizerProvider {
 	execute(
-		originWallet: Wallet,
-		targetWallet: Wallet,
+		originAccount: Account,
+		targetAccount: Account,
 		amount: Monetary,
 	): Promise<boolean>;
 }

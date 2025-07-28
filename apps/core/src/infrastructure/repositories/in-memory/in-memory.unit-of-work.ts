@@ -1,10 +1,10 @@
 import { IUnitOfWork } from '@/shared/seedwork/iunit-of-work';
 import { InMemoryTransferRepository } from './in-memory-transfer.repository';
-import { InMemoryWalletRepository } from './in-memory-wallet.repository';
+import { InMemoryAccountRepository } from './in-memory-account.repository';
 
 export class InMemoryUnitOfWork implements IUnitOfWork {
 	transferRepository = new InMemoryTransferRepository();
-	walletRepository = new InMemoryWalletRepository();
+	accountRepository = new InMemoryAccountRepository();
 
 	async begin() {}
 

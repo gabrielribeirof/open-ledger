@@ -1,5 +1,5 @@
 import { Entity, OneToOne, Opt, PrimaryKey, Property } from '@mikro-orm/core';
-import { WalletEntity } from './wallet.entity';
+import { AccountEntity } from './account.entity';
 
 @Entity({ tableName: 'users' })
 export class UserEntity {
@@ -24,6 +24,6 @@ export class UserEntity {
 	@Property({ onUpdate: () => new Date() })
 	updated_at: Date & Opt = new Date();
 
-	@OneToOne(() => WalletEntity, (wallet) => wallet.user)
-	wallet!: WalletEntity;
+	@OneToOne(() => AccountEntity, (account) => account.user)
+	account!: AccountEntity;
 }

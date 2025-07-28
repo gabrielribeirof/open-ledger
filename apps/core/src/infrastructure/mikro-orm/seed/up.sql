@@ -1,6 +1,6 @@
 BEGIN;
 
--- USER 1, WALLET COMMON
+-- USER 1, ACCOUNT COMMON
 INSERT INTO
 	users (id, name, document, email, password, created_at, updated_at)
 VALUES
@@ -8,14 +8,14 @@ VALUES
 		'14fae17b-73c8-49f8-92b9-e7cd8ac75324',
 		'user1',
 		'91315209012',
-		'user1@wallet.io',
+		'user1@account.io',
 		'$2a$10$Z3uc8uP/EbXUSft1Giod7.PsIm12riWaH0RPIxxRIh7.Q5.MCC5du',
 		NOW(),
 		NOW()
 	);
 
 INSERT INTO
-	wallets (id, type, user_id, balance, version, updated_at)
+	accounts (id, type, user_id, balance, version, updated_at)
 VALUES
 	(
 		'a7ff5d70-2162-40a3-a559-edafe5012398',
@@ -26,7 +26,7 @@ VALUES
 		NOW()
 	);
 
--- USER 2, WALLET MERCHANT
+-- USER 2, ACCOUNT MERCHANT
 INSERT INTO
 	users (id, name, document, email, password, created_at, updated_at)
 VALUES
@@ -34,14 +34,14 @@ VALUES
 		'6191182a-22ce-4f28-9efc-963005effa72',
 		'user2',
 		'73987832053',
-		'user2@wallet.io',
+		'user2@account.io',
 		'$2a$10$Z3uc8uP/EbXUSft1Giod7.PsIm12riWaH0RPIxxRIh7.Q5.MCC5du',
 		NOW(),
 		NOW()
 	);
 
 INSERT INTO
-	wallets (id, type, user_id, balance, version, updated_at)
+	accounts (id, type, user_id, balance, version, updated_at)
 VALUES
 	(
 		'5765171b-e3f8-4f09-8a36-89018d64e4d2',
@@ -60,14 +60,14 @@ VALUES
 		'8db661c0-fc6e-4dd0-93f0-358db0f930dc',
 		'user3',
 		'00972928006',
-		'user3@wallet.io',
+		'user3@account.io',
 		'$2a$10$Z3uc8uP/EbXUSft1Giod7.PsIm12riWaH0RPIxxRIh7.Q5.MCC5du',
 		NOW(),
 		NOW()
 	);
 
 INSERT INTO
-	wallets (id, type, user_id, balance, version, updated_at)
+	accounts (id, type, user_id, balance, version, updated_at)
 VALUES
 	(
 		'cb661203-a81f-43ce-8c90-03b6f93aa093',

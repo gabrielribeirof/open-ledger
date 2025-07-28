@@ -1,36 +1,36 @@
-import { Wallet } from '@/domain/wallet/wallet';
-import { WalletType } from '@/domain/wallet/wallet-type';
+import { Account } from '@/domain/account/account';
+import { AccountType } from '@/domain/account/account-type';
 import { Monetary } from '@/shared/domain/monetary';
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
 
-describe('Wallet', () => {
-	it('should create wallet with valid data', () => {
-		const walletType = WalletType.COMMON;
+describe('Account', () => {
+	it('should create account with valid data', () => {
+		const accountType = AccountType.COMMON;
 		const userId = new UniqueIdentifier();
 		const balance = Monetary.create(100).getRight();
 		const version = 1;
 
-		const sut = Wallet.create({
-			type: walletType,
+		const sut = Account.create({
+			type: accountType,
 			userId,
 			balance,
 			version,
 		});
 
-		expect(sut.type).toBe(walletType);
+		expect(sut.type).toBe(accountType);
 		expect(sut.userId).toBe(userId);
 		expect(sut.balance).toBe(balance);
 		expect(sut.version).toBe(version);
 	});
 
 	it('should be able to deposit money', () => {
-		const walletType = WalletType.MERCHANT;
+		const accountType = AccountType.MERCHANT;
 		const userId = new UniqueIdentifier();
 		const balance = Monetary.create(100).getRight();
 		const version = 1;
 
-		const sut = Wallet.create({
-			type: walletType,
+		const sut = Account.create({
+			type: accountType,
 			userId,
 			balance,
 			version,
@@ -45,13 +45,13 @@ describe('Wallet', () => {
 	});
 
 	it('should be able to withdraw money', () => {
-		const walletType = WalletType.MERCHANT;
+		const accountType = AccountType.MERCHANT;
 		const userId = new UniqueIdentifier();
 		const balance = Monetary.create(100).getRight();
 		const version = 1;
 
-		const sut = Wallet.create({
-			type: walletType,
+		const sut = Account.create({
+			type: accountType,
 			userId,
 			balance,
 			version,
