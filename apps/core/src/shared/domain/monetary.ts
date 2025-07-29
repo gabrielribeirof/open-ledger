@@ -13,7 +13,7 @@ export class Monetary extends ValueObject<MonetaryProps> {
 	public static readonly MAX_VALUE = 9999999999999.99
 
 	get value(): number {
-		return this.props.value
+		return this.properties.value
 	}
 
 	get toCents(): number {
@@ -21,7 +21,7 @@ export class Monetary extends ValueObject<MonetaryProps> {
 	}
 
 	private set value(value: number) {
-		this.props.value = value
+		this.properties.value = value
 	}
 
 	public add(value: Monetary) {
