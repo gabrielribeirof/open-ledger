@@ -4,37 +4,38 @@ import {
 	ExceptionFilter,
 	HttpStatus,
 	Logger,
-} from '@nestjs/common';
-import { Error } from '../seedwork/error';
-import { ErrorCode } from '../seedwork/error-code';
-import { Request, Response } from 'express';
+} from '@nestjs/common'
+import { Request, Response } from 'express'
+
+import { Error } from '../seedwork/error'
+import { ErrorCode } from '../seedwork/error-code'
 
 @Catch(Error)
 export class ErrorFilter implements ExceptionFilter {
-	private readonly logger = new Logger(ErrorFilter.name);
+	private readonly logger = new Logger(ErrorFilter.name)
 
 	public catch(error: Error, host: ArgumentsHost) {
-		const ctx = host.switchToHttp();
-		const request = ctx.getRequest<Request>();
-		const response = ctx.getResponse<Response>();
+		const ctx = host.switchToHttp()
+		const request = ctx.getRequest<Request>()
+		const response = ctx.getResponse<Response>()
 
 		function getErrorCodesToHttpStatus(code: ErrorCode) {
 			switch (code) {
 				case ErrorCode.INVALID_PARAMETERS:
 				case ErrorCode.INSUFFICIENT_FUNDS:
 				case ErrorCode.UNAUTHORIZED_TRANSFER:
-					return HttpStatus.BAD_REQUEST;
+					return HttpStatus.BAD_REQUEST
 				case ErrorCode.ACCOUNT_NOT_FOUND:
-					return HttpStatus.NOT_FOUND;
+					return HttpStatus.NOT_FOUND
 				case ErrorCode.TRANSFER_AUTHORIZER_PROVIDER_ERROR:
 				case ErrorCode.INSUFFICIENT_ACCOUNT_TYPE_PERMISSIONS:
-					return HttpStatus.FORBIDDEN;
+					return HttpStatus.FORBIDDEN
 				case ErrorCode.TRANSFER_AMOUNT_MUST_BE_GREATER_THAN_ZERO:
-					return HttpStatus.UNPROCESSABLE_ENTITY;
+					return HttpStatus.UNPROCESSABLE_ENTITY
 				case ErrorCode.PROVIDER_NOT_FOUND:
 				case ErrorCode.INTERNAL_SERVER_ERROR:
 				default:
-					return HttpStatus.INTERNAL_SERVER_ERROR;
+					return HttpStatus.INTERNAL_SERVER_ERROR
 			}
 		}
 
@@ -46,8 +47,8 @@ export class ErrorFilter implements ExceptionFilter {
 			headers: request.headers,
 			query: request.params,
 			error,
-		});
+		})
 
-		response.status(getErrorCodesToHttpStatus(error.code)).json(error);
+		response.status(getErrorCodesToHttpStatus(error.code)).json(error)
 	}
 }

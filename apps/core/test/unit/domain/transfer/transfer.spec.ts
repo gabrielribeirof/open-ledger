@@ -1,36 +1,36 @@
-import { Transfer } from '@/domain/transfer/transfer';
-import { Monetary } from '@/shared/domain/monetary';
-import { TransferAmountMustBeGreaterThanZeroError } from '@/shared/domain/_errors/transfer-amount-must-be-greater-than-zero.error';
-import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier';
+import { Transfer } from '@/domain/transfer/transfer'
+import { TransferAmountMustBeGreaterThanZeroError } from '@/shared/domain/_errors/transfer-amount-must-be-greater-than-zero.error'
+import { Monetary } from '@/shared/domain/monetary'
+import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
 
 describe('Transfer', () => {
 	it('should not create transfer with invalid amount data', () => {
-		const originId = new UniqueIdentifier();
-		const targetId = new UniqueIdentifier();
-		const amount = Monetary.create(0).getRight();
+		const originId = new UniqueIdentifier()
+		const targetId = new UniqueIdentifier()
+		const amount = Monetary.create(0).getRight()
 
 		const sut = Transfer.create({
 			originId,
 			targetId,
 			amount,
-		}).getLeft();
+		}).getLeft()
 
-		expect(sut).toBeInstanceOf(TransferAmountMustBeGreaterThanZeroError);
-	});
+		expect(sut).toBeInstanceOf(TransferAmountMustBeGreaterThanZeroError)
+	})
 
 	it('should create transfer with valid data', () => {
-		const originId = new UniqueIdentifier();
-		const targetId = new UniqueIdentifier();
-		const amount = Monetary.create(100).getRight();
+		const originId = new UniqueIdentifier()
+		const targetId = new UniqueIdentifier()
+		const amount = Monetary.create(100).getRight()
 
 		const sut = Transfer.create({
 			originId,
 			targetId,
 			amount,
-		}).getRight();
+		}).getRight()
 
-		expect(sut.originId).toBe(originId);
-		expect(sut.targetId).toBe(targetId);
-		expect(sut.amount).toBe(amount);
-	});
-});
+		expect(sut.originId).toBe(originId)
+		expect(sut.targetId).toBe(targetId)
+		expect(sut.amount).toBe(amount)
+	})
+})

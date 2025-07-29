@@ -1,8 +1,8 @@
-import { Error } from '../../seedwork/error';
-import { ErrorCode } from '../../seedwork/error-code';
+import { Error } from '../../seedwork/error'
+import { ErrorCode } from '../../seedwork/error-code'
 
 export class ProviderNotFoundError extends Error {
 	constructor() {
-		super(ErrorCode.PROVIDER_NOT_FOUND);
+		super(ErrorCode.PROVIDER_NOT_FOUND)
 	}
 }

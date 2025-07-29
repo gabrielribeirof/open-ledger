@@ -1,23 +1,25 @@
-import { catchError, lastValueFrom, map, of } from 'rxjs';
-import { ITransferAuthorizerProvider } from '../itransfer-authorizer.provider';
-import { ConfigService } from '@nestjs/config';
-import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
-import { ENVIRONMENT_VARIABLES } from '@/environment-variables-schema';
-import { TransferAuthorizerProviderError } from '@/shared/domain/_errors/transfer-authorizer-provider.error';
+import { HttpService } from '@nestjs/axios'
+import { Injectable, Logger } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { catchError, lastValueFrom, map, of } from 'rxjs'
+
+import { ENVIRONMENT_VARIABLES } from '@/environment-variables-schema'
+import { TransferAuthorizerProviderError } from '@/shared/domain/_errors/transfer-authorizer-provider.error'
+import { HttpClient } from '@/shared/lib/http-client'
+
+import { ITransferAuthorizerProvider } from '../itransfer-authorizer.provider'
+import { ForbiddenApiError } from './api-errors/forbidden.api-error'
 import {
 	DevitoolsAuthorizeResponse,
 	devitoolsAuthorizeResponseSchema,
-} from './schemas/devitools-authorize-response.schema';
-import { ForbiddenApiError } from './api-errors/forbidden.api-error';
-import { HttpClient } from '@/shared/lib/http-client';
+} from './schemas/devitools-authorize-response.schema'
 
 @Injectable()
 export class DevitoolsTransferAuthorizerProvider
 	extends HttpClient
 	implements ITransferAuthorizerProvider
 {
-	private static logger = new Logger(DevitoolsTransferAuthorizerProvider.name);
+	private static logger = new Logger(DevitoolsTransferAuthorizerProvider.name)
 
 	constructor(
 		public readonly httpService: HttpService,
@@ -29,7 +31,7 @@ export class DevitoolsTransferAuthorizerProvider
 			configService.getOrThrow(
 				ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL,
 			),
-		);
+		)
 	}
 
 	async execute(): Promise<boolean> {
@@ -38,22 +40,22 @@ export class DevitoolsTransferAuthorizerProvider
 				map((response) => this.parseResponse(response).data.authorization),
 				catchError((error: Error) => {
 					if (ForbiddenApiError.canHandle(error)) {
-						throw new ForbiddenApiError(error);
+						throw new ForbiddenApiError(error)
 					}
-					throw error;
+					throw error
 				}),
 				catchError((error: Error) => {
 					if (error instanceof ForbiddenApiError) {
-						return of(error.response().data.authorization);
+						return of(error.response().data.authorization)
 					}
 
-					throw new TransferAuthorizerProviderError();
+					throw new TransferAuthorizerProviderError()
 				}),
 			),
-		);
+		)
 	}
 
 	private parseResponse(response: any): DevitoolsAuthorizeResponse {
-		return devitoolsAuthorizeResponseSchema.parse(response.data);
+		return devitoolsAuthorizeResponseSchema.parse(response.data)
 	}
 }

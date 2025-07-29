@@ -1,32 +1,32 @@
-import { getConfigOrThrowUtil } from '@/shared/utils/get-config-or-throw.util';
+import { getConfigOrThrowUtil } from '@/shared/utils/get-config-or-throw.util'
 
 describe('getConfigOrThrowUtil', () => {
-	const originalEnv = process.env;
+	const originalEnv = process.env
 
 	beforeEach(() => {
-		process.env = { ...originalEnv };
-	});
+		process.env = { ...originalEnv }
+	})
 
 	afterEach(() => {
-		process.env = originalEnv;
-	});
+		process.env = originalEnv
+	})
 
 	it('should return the environment variable value when it exists', () => {
-		const key = 'TEST_VAR';
-		const expectedValue = 'test-value';
-		process.env[key] = expectedValue;
+		const key = 'TEST_VAR'
+		const expectedValue = 'test-value'
+		process.env[key] = expectedValue
 
-		const result = getConfigOrThrowUtil(key);
+		const result = getConfigOrThrowUtil(key)
 
-		expect(result).toBe(expectedValue);
-	});
+		expect(result).toBe(expectedValue)
+	})
 
 	it('should throw an error when the environment variable does not exist', () => {
-		const key = 'NON_EXISTENT_VAR';
-		delete process.env[key];
+		const key = 'NON_EXISTENT_VAR'
+		delete process.env[key]
 
 		expect(() => {
-			getConfigOrThrowUtil(key);
-		}).toThrow();
-	});
-});
+			getConfigOrThrowUtil(key)
+		}).toThrow()
+	})
+})

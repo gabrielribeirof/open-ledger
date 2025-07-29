@@ -1,5 +1,5 @@
 interface ValueObjectProperties {
-	[index: string]: any;
+	[index: string]: any
 }
 
 export abstract class ValueObject<T extends ValueObjectProperties> {
@@ -7,9 +7,9 @@ export abstract class ValueObject<T extends ValueObjectProperties> {
 
 	public equals(vo?: ValueObject<T>): boolean {
 		if (vo === null || vo === undefined) {
-			return false;
+			return false
 		}
 
-		return JSON.stringify(this.props) === JSON.stringify(vo.props);
+		return JSON.stringify(this.props) === JSON.stringify(vo.props)
 	}
 }

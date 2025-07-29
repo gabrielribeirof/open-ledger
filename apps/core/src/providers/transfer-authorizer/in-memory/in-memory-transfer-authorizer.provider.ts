@@ -1,4 +1,4 @@
-import { ITransferAuthorizerProvider } from '../itransfer-authorizer.provider';
+import { ITransferAuthorizerProvider } from '../itransfer-authorizer.provider'
 
 export class InMemoryTransferAuthorizerProvider
 	implements ITransferAuthorizerProvider
@@ -6,6 +6,6 @@ export class InMemoryTransferAuthorizerProvider
 	constructor(private mockedResult = true) {}
 
 	async execute(): Promise<boolean> {
-		return this.mockedResult;
+		return this.mockedResult
 	}
 }

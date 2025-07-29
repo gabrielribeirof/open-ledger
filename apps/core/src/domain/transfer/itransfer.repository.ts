@@ -1,7 +1,7 @@
-import { Transfer } from './transfer';
+import { Transfer } from './transfer'
 
 export interface ITransferRepository {
-	save(transfer: Transfer): Promise<void>;
+	save(transfer: Transfer): Promise<void>
 }
 
-export const TRANSFER_REPOSITORY = 'ITransferRepository';
+export const TRANSFER_REPOSITORY = 'ITransferRepository'

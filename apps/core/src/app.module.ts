@@ -1,40 +1,41 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { MikroOrmModule } from '@mikro-orm/nestjs'
+import { HttpModule } from '@nestjs/axios'
+import { Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
+import { APP_FILTER } from '@nestjs/core'
+
+import { ACCOUNT_REPOSITORY } from './domain/account/iaccount.repository'
+import { CreateTransferDomainService } from './domain/services/create-transfer.domain-service'
+import { TRANSFER_REPOSITORY } from './domain/transfer/itransfer.repository'
 import {
 	ENVIRONMENT_VARIABLES,
 	environmentVariablesSchema,
-} from './environment-variables-schema';
-import { APP_FILTER } from '@nestjs/core';
-import { ErrorFilter } from './shared/filters/error.filter';
-import { TRANSFER_REPOSITORY } from './domain/transfer/itransfer.repository';
-import { ACCOUNT_REPOSITORY } from './domain/account/iaccount.repository';
-import { CreateTransferService } from './services/create-transfer.service';
-import { UserEntity } from './infrastructure/mikro-orm/entities/user.entity';
-import { AccountEntity } from './infrastructure/mikro-orm/entities/account.entity';
-import { TransferEntity } from './infrastructure/mikro-orm/entities/transfer.entity';
-import { TransfersController } from './infrastructure/http/controllers/transfers.controller';
-import { HttpModule } from '@nestjs/axios';
-import { TRANSFER_AUTHORIZER_PROVIDER } from './providers/transfer-authorizer/itransfer-authorizer.provider';
-import { getConfigOrThrowUtil } from './shared/utils/get-config-or-throw.util';
-import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { UNIT_OF_WORK } from './shared/seedwork/iunit-of-work';
-import { MikroOrmUnitOfWork } from './infrastructure/repositories/mikro-orm/mikro-orm.unit-of-work';
-import { MikroOrmTransferRepository } from './infrastructure/repositories/mikro-orm/mikro-orm-transfer.repository';
-import { MikroOrmAccountRepository } from './infrastructure/repositories/mikro-orm/mikro-orm-account.repository';
-import { NativeErrorFilter } from './shared/filters/native-error.filter';
-import { InMemoryTransferAuthorizerProvider } from './providers/transfer-authorizer/in-memory/in-memory-transfer-authorizer.provider';
-import { DevitoolsTransferAuthorizerProvider } from './providers/transfer-authorizer/devitools/devitools-transfer-authorizer.provider';
-import { ProviderNotFoundError } from './shared/domain/_errors/provider-not-found.error';
-import { CreateTransferDomainService } from './domain/services/create-transfer.domain-service';
+} from './environment-variables-schema'
+import { TransfersController } from './infrastructure/http/controllers/transfers.controller'
+import { AccountEntity } from './infrastructure/mikro-orm/entities/account.entity'
+import { TransferEntity } from './infrastructure/mikro-orm/entities/transfer.entity'
+import { UserEntity } from './infrastructure/mikro-orm/entities/user.entity'
+import { MikroOrmUnitOfWork } from './infrastructure/repositories/mikro-orm/mikro-orm.unit-of-work'
+import { MikroOrmAccountRepository } from './infrastructure/repositories/mikro-orm/mikro-orm-account.repository'
+import { MikroOrmTransferRepository } from './infrastructure/repositories/mikro-orm/mikro-orm-transfer.repository'
+import { DevitoolsTransferAuthorizerProvider } from './providers/transfer-authorizer/devitools/devitools-transfer-authorizer.provider'
+import { InMemoryTransferAuthorizerProvider } from './providers/transfer-authorizer/in-memory/in-memory-transfer-authorizer.provider'
+import { TRANSFER_AUTHORIZER_PROVIDER } from './providers/transfer-authorizer/itransfer-authorizer.provider'
+import { CreateTransferService } from './services/create-transfer.service'
+import { ProviderNotFoundError } from './shared/domain/_errors/provider-not-found.error'
+import { ErrorFilter } from './shared/filters/error.filter'
+import { NativeErrorFilter } from './shared/filters/native-error.filter'
+import { UNIT_OF_WORK } from './shared/seedwork/iunit-of-work'
+import { getConfigOrThrowUtil } from './shared/utils/get-config-or-throw.util'
 
 function findTransferAuthorizerProviders(type: string) {
 	switch (type) {
 		case 'in-memory':
-			return InMemoryTransferAuthorizerProvider;
+			return InMemoryTransferAuthorizerProvider
 		case 'devitools':
-			return DevitoolsTransferAuthorizerProvider;
+			return DevitoolsTransferAuthorizerProvider
 		default:
-			throw new ProviderNotFoundError();
+			throw new ProviderNotFoundError()
 	}
 }
 

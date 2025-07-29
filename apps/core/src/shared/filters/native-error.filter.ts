@@ -1,20 +1,21 @@
 import {
-	type ExceptionFilter,
 	type ArgumentsHost,
 	Catch,
+	type ExceptionFilter,
 	Logger,
-} from '@nestjs/common';
-import { type Request, type Response } from 'express';
-import { InternalServerError } from '../domain/_errors/internal-server.error';
+} from '@nestjs/common'
+import { type Request, type Response } from 'express'
+
+import { InternalServerError } from '../domain/_errors/internal-server.error'
 
 @Catch(Error)
 export class NativeErrorFilter implements ExceptionFilter {
-	private readonly logger = new Logger(NativeErrorFilter.name);
+	private readonly logger = new Logger(NativeErrorFilter.name)
 
 	public catch(error: Error, host: ArgumentsHost) {
-		const ctx = host.switchToHttp();
-		const request = ctx.getRequest<Request>();
-		const response = ctx.getResponse<Response>();
+		const ctx = host.switchToHttp()
+		const request = ctx.getRequest<Request>()
+		const response = ctx.getResponse<Response>()
 
 		this.logger.error('Error response sent', {
 			method: request.method,
@@ -28,8 +29,8 @@ export class NativeErrorFilter implements ExceptionFilter {
 			stack: error.stack,
 			message: error.message,
 			name: error.name,
-		});
+		})
 
-		response.status(500).json(new InternalServerError());
+		response.status(500).json(new InternalServerError())
 	}
 }

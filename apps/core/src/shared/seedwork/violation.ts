@@ -1,4 +1,4 @@
-import { ViolationCode } from './violation-code';
+import { ViolationCode } from './violation-code'
 
 export abstract class Violation {
 	constructor(

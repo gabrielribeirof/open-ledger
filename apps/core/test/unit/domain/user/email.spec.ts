@@ -1,40 +1,41 @@
-import { Email } from '@/domain/user/email';
-import { InvalidFormatViolation } from '@/shared/domain/_errors/violations/invalid-format.violation';
-import { faker } from '@faker-js/faker';
+import { faker } from '@faker-js/faker'
+
+import { Email } from '@/domain/user/email'
+import { InvalidFormatViolation } from '@/shared/domain/_errors/violations/invalid-format.violation'
 
 describe('Email', () => {
 	it('should create an Email with a valid email address', () => {
-		const validEmail = faker.internet.email();
-		const sut = Email.create({ value: validEmail });
+		const validEmail = faker.internet.email()
+		const sut = Email.create({ value: validEmail })
 
-		expect(sut.isRight()).toBe(true);
-		expect(sut.value).toBeInstanceOf(Email);
+		expect(sut.isRight()).toBe(true)
+		expect(sut.value).toBeInstanceOf(Email)
 		if (sut.isRight()) {
-			expect(sut.value.value).toBe(validEmail);
+			expect(sut.value.value).toBe(validEmail)
 		}
-	});
+	})
 
 	it('should return InvalidFormatViolation for an invalid email address', () => {
-		const invalidEmail = 'user@invalid-email';
-		const sut = Email.create({ value: invalidEmail });
+		const invalidEmail = 'user@invalid-email'
+		const sut = Email.create({ value: invalidEmail })
 
-		expect(sut.isLeft()).toBe(true);
-		expect(sut.value).toBeInstanceOf(InvalidFormatViolation);
-	});
+		expect(sut.isLeft()).toBe(true)
+		expect(sut.value).toBeInstanceOf(InvalidFormatViolation)
+	})
 
 	it('should return InvalidFormatViolation for a non-email string', () => {
-		const nonEmail = 'not-an-email';
-		const sut = Email.create({ value: nonEmail });
+		const nonEmail = 'not-an-email'
+		const sut = Email.create({ value: nonEmail })
 
-		expect(sut.isLeft()).toBe(true);
-		expect(sut.value).toBeInstanceOf(InvalidFormatViolation);
-	});
+		expect(sut.isLeft()).toBe(true)
+		expect(sut.value).toBeInstanceOf(InvalidFormatViolation)
+	})
 
 	it('should return InvalidFormatViolation for an empty string', () => {
-		const emptyEmail = '';
-		const sut = Email.create({ value: emptyEmail });
+		const emptyEmail = ''
+		const sut = Email.create({ value: emptyEmail })
 
-		expect(sut.isLeft()).toBe(true);
-		expect(sut.value).toBeInstanceOf(InvalidFormatViolation);
-	});
-});
+		expect(sut.isLeft()).toBe(true)
+		expect(sut.value).toBeInstanceOf(InvalidFormatViolation)
+	})
+})

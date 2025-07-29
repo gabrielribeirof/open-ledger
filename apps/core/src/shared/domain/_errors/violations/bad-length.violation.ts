@@ -1,5 +1,5 @@
-import { Violation } from '@/shared/seedwork/violation';
-import { ViolationCode } from '@/shared/seedwork/violation-code';
+import { Violation } from '@/shared/seedwork/violation'
+import { ViolationCode } from '@/shared/seedwork/violation-code'
 
 export class BadLengthViolation extends Violation {
 	constructor(
@@ -10,6 +10,6 @@ export class BadLengthViolation extends Violation {
 		super(
 			ViolationCode.BAD_LENGTH,
 			`Deve ter entre ${min} e ${max} ${lengthEntityPluralName}`,
-		);
+		)
 	}
 }
