@@ -17,29 +17,16 @@ interface TransactionProperties {
 	operations: Operation[]
 }
 
-interface AmountDistributionStrategy {
-	amount: Amount
-}
-
-interface ShareDistributionStrategy {
-	share: number
-}
-
-interface RemainingDistributionStrategy {
-	remaining: true
-}
-
-type DistributionStrategy = AmountDistributionStrategy | ShareDistributionStrategy | RemainingDistributionStrategy
-
-export type AccountDistribution = DistributionStrategy & {
+export interface Distribution {
 	account_id: UniqueIdentifier
+	amount: Amount
 }
 
 interface TransactionCreateInput {
 	amount: Amount
 	asset_id: UniqueIdentifier
-	source_distributions: AccountDistribution[]
-	target_distributions: AccountDistribution[]
+	source_distributions: Distribution[]
+	target_distributions: Distribution[]
 }
 
 export class Transaction extends AggregateRoot<TransactionProperties> {
@@ -59,39 +46,10 @@ export class Transaction extends AggregateRoot<TransactionProperties> {
 		super(properties, id)
 	}
 
-	private static calculateAccountAmount(
-		distributions: AccountDistribution[],
-		totalAmount: Amount,
-	): Map<UniqueIdentifier, Amount> {
-		const accountAmounts = new Map<UniqueIdentifier, Amount>()
-
-		const total = Amount.zero()
-		const remaining = totalAmount
-
-		for (const distribution of distributions) {
-			if ('share' in distribution) {
-				const shareAmount = totalAmount.multiply(distribution.share / 100)
-				total.add(shareAmount)
-				remaining.subtract(shareAmount)
-			} else if ('amount' in distribution) {
-				total.add(distribution.amount)
-				remaining.subtract(distribution.amount)
-			} else if ('remaining' in distribution) {
-				total.add(remaining)
-				remaining.subtract(remaining)
-			}
-		}
-
-		return accountAmounts
-	}
-
 	static create(input: TransactionCreateInput, id?: UniqueIdentifier): Either<Error, Transaction> {
-		const sourceAmounts = this.calculateAccountAmount(input.source_distributions, input.amount)
-		const targetAmounts = this.calculateAccountAmount(input.target_distributions, input.amount)
-
 		const sourceOperations = input.source_distributions.map((source) =>
 			Operation.create({
-				amount: sourceAmounts.get(source.account_id)!,
+				amount: source.amount,
 				type: OperationType.DEBIT,
 				account_id: source.account_id,
 			}),
@@ -99,7 +57,7 @@ export class Transaction extends AggregateRoot<TransactionProperties> {
 
 		const targetOperations = input.target_distributions.map((target) =>
 			Operation.create({
-				amount: targetAmounts.get(target.account_id)!,
+				amount: target.amount,
 				type: OperationType.CREDIT,
 				account_id: target.account_id,
 			}),

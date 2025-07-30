@@ -23,6 +23,14 @@ export class Operation extends Entity<OperationProperties> {
 		return this.properties.account_id
 	}
 
+	public isDebit(): boolean {
+		return this.type === OperationType.DEBIT
+	}
+
+	public isCredit(): boolean {
+		return this.type === OperationType.CREDIT
+	}
+
 	private constructor(properties: OperationProperties, id?: UniqueIdentifier) {
 		super(properties, id)
 	}
