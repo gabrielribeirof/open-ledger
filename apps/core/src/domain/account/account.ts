@@ -1,39 +1,43 @@
-import { Monetary } from '@/shared/domain/monetary'
+import { AssetCode } from '@/domain/asset/asset-code'
+import { InsufficientFundsError } from '@/shared/domain/_errors/insufficient-funds.error'
+import { Amount } from '@/shared/domain/amount'
 import { AggregateRoot } from '@/shared/seedwork/aggregate-root'
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
 
-import { AccountType } from './account-type'
+import { AccountAlias } from './account-alias'
 
 interface AccountProperties {
-	type: AccountType
-	userId: UniqueIdentifier
-	balance: Monetary
+	amount: Amount
+	asset_code: AssetCode
+	alias: AccountAlias
 	version: number
 }
 
 export class Account extends AggregateRoot<AccountProperties> {
-	get type() {
-		return this.properties.type
+	get amount() {
+		return this.properties.amount
 	}
 
-	get userId() {
-		return this.properties.userId
+	get asset_code() {
+		return this.properties.asset_code
 	}
 
-	get balance() {
-		return this.properties.balance
+	get alias() {
+		return this.properties.alias
 	}
 
 	get version() {
 		return this.properties.version
 	}
 
-	public deposit(amount: Monetary): void {
-		this.properties.balance.add(amount)
+	public deposit(amount: Amount): void {
+		this.properties.amount = this.properties.amount.add(amount)
 	}
 
-	public withdraw(amount: Monetary): void {
-		this.properties.balance.subtract(amount)
+	public withdraw(amount: Amount): void {
+		const newAmount = this.properties.amount.subtract(amount)
+		if (newAmount.value < 0) throw new InsufficientFundsError()
+		this.properties.amount = newAmount
 	}
 
 	private constructor(props: AccountProperties, id?: UniqueIdentifier) {
