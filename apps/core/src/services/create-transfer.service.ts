@@ -1,9 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 
-import {
-	ACCOUNT_REPOSITORY,
-	IAccountRepository,
-} from '@/domain/account/iaccount.repository'
+import { ACCOUNT_REPOSITORY, IAccountRepository } from '@/domain/account/iaccount.repository'
 import { CreateTransferDomainService } from '@/domain/services/create-transfer.domain-service'
 import { Transfer } from '@/domain/transfer/transfer'
 import { Monetary } from '@/shared/domain/monetary'
@@ -51,11 +48,7 @@ export class CreateTransferService {
 			throw new AccountNotFoundError()
 		}
 
-		const transfer = await this.createTransferDomainService.execute(
-			origin,
-			target,
-			amount.value,
-		)
+		const transfer = await this.createTransferDomainService.execute(origin, target, amount.value)
 
 		return transfer
 	}

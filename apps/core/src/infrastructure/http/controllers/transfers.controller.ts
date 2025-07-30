@@ -1,9 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common'
-import {
-	ApiCreatedResponse,
-	ApiExtraModels,
-	getSchemaPath,
-} from '@nestjs/swagger'
+import { ApiCreatedResponse, ApiExtraModels, getSchemaPath } from '@nestjs/swagger'
 
 import { CreateTransferService } from '@/services/create-transfer.service'
 

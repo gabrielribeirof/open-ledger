@@ -15,25 +15,22 @@ interface TransferProperties {
 
 export class Transfer extends AggregateRoot<TransferProperties> {
 	get originId() {
-		return this.props.originId
+		return this.properties.originId
 	}
 
 	get targetId() {
-		return this.props.targetId
+		return this.properties.targetId
 	}
 
 	get amount() {
-		return this.props.amount
+		return this.properties.amount
 	}
 
 	private constructor(props: TransferProperties, id?: UniqueIdentifier) {
 		super(props, id)
 	}
 
-	public static create(
-		props: TransferProperties,
-		id?: UniqueIdentifier,
-	): Either<Error, Transfer> {
+	public static create(props: TransferProperties, id?: UniqueIdentifier): Either<Error, Transfer> {
 		if (props.amount.value <= 0) {
 			return left(new TransferAmountMustBeGreaterThanZeroError())
 		}

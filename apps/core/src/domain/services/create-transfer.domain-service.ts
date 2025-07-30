@@ -24,11 +24,7 @@ export class CreateTransferDomainService {
 		private readonly unitOfWork: IUnitOfWork,
 	) {}
 
-	public async execute(
-		origin: Account,
-		target: Account,
-		amount: Monetary,
-	): Promise<Transfer> {
+	public async execute(origin: Account, target: Account, amount: Monetary): Promise<Transfer> {
 		if (origin.type !== AccountType.COMMON) {
 			throw new InsufficientAccountTypePermissionsError()
 		}
@@ -37,11 +33,7 @@ export class CreateTransferDomainService {
 			throw new InsufficientFundsError()
 		}
 
-		const isAuthorized = await this.transferAuthorizer.execute(
-			origin,
-			target,
-			amount,
-		)
+		const isAuthorized = await this.transferAuthorizer.execute(origin, target, amount)
 
 		if (!isAuthorized) {
 			throw new UnauthorizedTransferError()

@@ -12,11 +12,11 @@ interface PasswordProperties {
 
 export class Password extends ValueObject<PasswordProperties> {
 	get value() {
-		return this.props.value
+		return this.properties.value
 	}
 
 	get isHashed() {
-		return this.props.isHashed
+		return this.properties.isHashed
 	}
 
 	private constructor(props: PasswordProperties) {

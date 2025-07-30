@@ -11,7 +11,7 @@ interface EmailProperties {
 
 export class Email extends ValueObject<EmailProperties> {
 	get value() {
-		return this.props.value
+		return this.properties.value
 	}
 
 	private constructor(props: EmailProperties) {

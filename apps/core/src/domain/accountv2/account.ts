@@ -1,39 +1,25 @@
-import { Monetary } from '@/shared/domain/monetary'
+import { AssetCode } from '@/domain/asset/asset-code'
+import { Amount } from '@/shared/domain/amount'
 import { AggregateRoot } from '@/shared/seedwork/aggregate-root'
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
 
-import { AccountType } from './account-type'
-
 interface AccountProperties {
-	type: AccountType
-	userId: UniqueIdentifier
-	balance: Monetary
+	balance: Amount
+	asset_code: AssetCode
 	version: number
 }
 
 export class Account extends AggregateRoot<AccountProperties> {
-	get type() {
-		return this.properties.type
-	}
-
-	get userId() {
-		return this.properties.userId
-	}
-
 	get balance() {
 		return this.properties.balance
 	}
 
+	get asset_code() {
+		return this.properties.asset_code
+	}
+
 	get version() {
 		return this.properties.version
-	}
-
-	public deposit(amount: Monetary): void {
-		this.properties.balance.add(amount)
-	}
-
-	public withdraw(amount: Monetary): void {
-		this.properties.balance.subtract(amount)
 	}
 
 	private constructor(props: AccountProperties, id?: UniqueIdentifier) {

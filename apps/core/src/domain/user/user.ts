@@ -14,19 +14,19 @@ interface UserProperties {
 
 export class User extends AggregateRoot<UserProperties> {
 	get name() {
-		return this.props.name
+		return this.properties.name
 	}
 
 	get document() {
-		return this.props.document
+		return this.properties.document
 	}
 
 	get email() {
-		return this.props.email
+		return this.properties.email
 	}
 
 	get password() {
-		return this.props.password
+		return this.properties.password
 	}
 
 	private constructor(props: UserProperties, id?: UniqueIdentifier) {

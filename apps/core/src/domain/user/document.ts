@@ -11,7 +11,7 @@ interface DocumentProperties {
 
 export class Document extends ValueObject<DocumentProperties> {
 	get value() {
-		return this.props.value
+		return this.properties.value
 	}
 
 	private constructor(props: DocumentProperties) {
