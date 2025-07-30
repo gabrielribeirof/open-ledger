@@ -13,10 +13,7 @@ import { Error } from '@/shared/seedwork/error'
 
 function createSut(isTransferAuthorized = true) {
 	const unitOfWork = new InMemoryUnitOfWork()
-	const sut = new CreateTransferDomainService(
-		new InMemoryTransferAuthorizerProvider(isTransferAuthorized),
-		unitOfWork,
-	)
+	const sut = new CreateTransferDomainService(new InMemoryTransferAuthorizerProvider(isTransferAuthorized), unitOfWork)
 
 	return {
 		sut,
@@ -31,9 +28,9 @@ describe('CreateTransferDomainService', () => {
 
 		const amount = Monetary.create(100).getRight()
 
-		expect(
-			createSut().sut.execute(origin, target, amount),
-		).rejects.toBeInstanceOf(InsufficientAccountTypePermissionsError)
+		expect(createSut().sut.execute(origin, target, amount)).rejects.toBeInstanceOf(
+			InsufficientAccountTypePermissionsError,
+		)
 	})
 
 	it('should not create a transfer if the originating account balance is insufficient', async () => {
@@ -42,9 +39,7 @@ describe('CreateTransferDomainService', () => {
 
 		const amount = Monetary.create(100).getRight()
 
-		expect(
-			createSut().sut.execute(origin, target, amount),
-		).rejects.toBeInstanceOf(InsufficientFundsError)
+		expect(createSut().sut.execute(origin, target, amount)).rejects.toBeInstanceOf(InsufficientFundsError)
 	})
 
 	it('should not create a transfer if the transfer is not authorized', async () => {
@@ -56,9 +51,7 @@ describe('CreateTransferDomainService', () => {
 
 		const amount = Monetary.create(100).getRight()
 
-		expect(
-			createSut(false).sut.execute(origin, target, amount),
-		).rejects.toBeInstanceOf(UnauthorizedTransferError)
+		expect(createSut(false).sut.execute(origin, target, amount)).rejects.toBeInstanceOf(UnauthorizedTransferError)
 	})
 
 	it('should not create a transfer if transfer creation fails', async () => {
@@ -67,9 +60,7 @@ describe('CreateTransferDomainService', () => {
 
 		const amount = Monetary.create(-100).getRight()
 
-		expect(
-			createSut().sut.execute(origin, target, amount),
-		).rejects.toBeInstanceOf(Error)
+		expect(createSut().sut.execute(origin, target, amount)).rejects.toBeInstanceOf(Error)
 	})
 
 	it('should not create a transfer when unit of work fails', async () => {
@@ -85,14 +76,9 @@ describe('CreateTransferDomainService', () => {
 		unitOfWork.commit = jest.fn().mockRejectedValueOnce('Unit of work failed')
 		unitOfWork.rollback = jest.fn()
 
-		const sut = new CreateTransferDomainService(
-			new InMemoryTransferAuthorizerProvider(true),
-			unitOfWork,
-		)
+		const sut = new CreateTransferDomainService(new InMemoryTransferAuthorizerProvider(true), unitOfWork)
 
-		await expect(sut.execute(origin, target, amount)).rejects.toBeInstanceOf(
-			InternalServerError,
-		)
+		await expect(sut.execute(origin, target, amount)).rejects.toBeInstanceOf(InternalServerError)
 
 		expect(unitOfWork.rollback).toHaveBeenCalled()
 		expect(unitOfWork.commit).toHaveBeenCalled()
@@ -107,9 +93,7 @@ describe('CreateTransferDomainService', () => {
 
 		const amount = Monetary.create(100).getRight()
 
-		expect(
-			createSut().sut.execute(origin, target, amount),
-		).resolves.toMatchObject({
+		expect(createSut().sut.execute(origin, target, amount)).resolves.toMatchObject({
 			originId: origin.id,
 			targetId: target.id,
 			amount,

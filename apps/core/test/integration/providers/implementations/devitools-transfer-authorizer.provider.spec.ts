@@ -38,9 +38,7 @@ describe('DevitoolsTransferAuthorizerProvider', () => {
 
 		const configService = testingModule.get(ConfigService)
 
-		url = configService.getOrThrow(
-			ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL,
-		)
+		url = configService.getOrThrow(ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL)
 	})
 
 	afterEach(async () => {
@@ -67,8 +65,6 @@ describe('DevitoolsTransferAuthorizerProvider', () => {
 	it('should return transfer authorizer provider error when some unmapped error occur', async () => {
 		nock(url).get('/authorize').reply(500)
 
-		await expect(sut.execute()).rejects.toBeInstanceOf(
-			TransferAuthorizerProviderError,
-		)
+		await expect(sut.execute()).rejects.toBeInstanceOf(TransferAuthorizerProviderError)
 	})
 })

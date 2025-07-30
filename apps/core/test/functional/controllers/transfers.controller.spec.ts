@@ -40,13 +40,9 @@ describe('TransfersController', () => {
 
 		const configService = testingModule.get(ConfigService)
 
-		transferAuthorizerService = configService.getOrThrow(
-			ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL,
-		)
+		transferAuthorizerService = configService.getOrThrow(ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL)
 
-		nock(transferAuthorizerService)
-			.get('/authorize')
-			.reply(200, transferAuthorizerServiceSuccessResponse)
+		nock(transferAuthorizerService).get('/authorize').reply(200, transferAuthorizerServiceSuccessResponse)
 
 		await app.init()
 	})
@@ -75,28 +71,17 @@ describe('TransfersController', () => {
 			type: AccountType.MERCHANT,
 		})
 
+		await entityManager.insertMany([UserMapper.toPersistence(originUser), UserMapper.toPersistence(targetUser)])
 		await entityManager.insertMany([
-			UserMapper.toPersistence(originUser),
-			UserMapper.toPersistence(targetUser),
-		])
-		await entityManager.insertMany([
-			AccountMapper.toPersistence(
-				originAccount,
-				entityManager.getReference(UserEntity, originUser.id.value),
-			),
-			AccountMapper.toPersistence(
-				targetAccount,
-				entityManager.getReference(UserEntity, targetUser.id.value),
-			),
+			AccountMapper.toPersistence(originAccount, entityManager.getReference(UserEntity, originUser.id.value)),
+			AccountMapper.toPersistence(targetAccount, entityManager.getReference(UserEntity, targetUser.id.value)),
 		])
 
-		const { statusCode, body } = await request(app.getHttpServer())
-			.post('/transfers')
-			.send({
-				amount: 100,
-				origin_id: originAccount.id.value,
-				target_id: targetAccount.id.value,
-			})
+		const { statusCode, body } = await request(app.getHttpServer()).post('/transfers').send({
+			amount: 100,
+			origin_id: originAccount.id.value,
+			target_id: targetAccount.id.value,
+		})
 
 		expect(statusCode).toBe(201)
 		expect(body).toEqual({
@@ -105,13 +90,11 @@ describe('TransfersController', () => {
 	})
 
 	test('POST /transfers with invalid parameters', async () => {
-		const { statusCode, body } = await request(app.getHttpServer())
-			.post('/transfers')
-			.send({
-				amount: 10.123,
-				origin_id: 'invalid',
-				target_id: 'invalid',
-			})
+		const { statusCode, body } = await request(app.getHttpServer()).post('/transfers').send({
+			amount: 10.123,
+			origin_id: 'invalid',
+			target_id: 'invalid',
+		})
 
 		expect(statusCode).toBe(400)
 		expect(body).toMatchObject({

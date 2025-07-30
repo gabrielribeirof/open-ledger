@@ -7,10 +7,7 @@ import { APP_FILTER } from '@nestjs/core'
 import { ACCOUNT_REPOSITORY } from './domain/account/iaccount.repository'
 import { CreateTransferDomainService } from './domain/services/create-transfer.domain-service'
 import { TRANSFER_REPOSITORY } from './domain/transfer/itransfer.repository'
-import {
-	ENVIRONMENT_VARIABLES,
-	environmentVariablesSchema,
-} from './environment-variables-schema'
+import { ENVIRONMENT_VARIABLES, environmentVariablesSchema } from './environment-variables-schema'
 import { TransfersController } from './infrastructure/http/controllers/transfers.controller'
 import { AccountEntity } from './infrastructure/mikro-orm/entities/account.entity'
 import { TransferEntity } from './infrastructure/mikro-orm/entities/transfer.entity'
@@ -71,9 +68,7 @@ function findTransferAuthorizerProviders(type: string) {
 		{
 			provide: TRANSFER_AUTHORIZER_PROVIDER,
 			useClass: findTransferAuthorizerProviders(
-				getConfigOrThrowUtil(
-					ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_PROVIDER,
-				),
+				getConfigOrThrowUtil(ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_PROVIDER),
 			),
 		},
 		{

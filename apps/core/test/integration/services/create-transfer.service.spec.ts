@@ -5,19 +5,13 @@ import { CreateTransferDomainService } from '@/domain/services/create-transfer.d
 import { InMemoryUnitOfWork } from '@/infrastructure/repositories/in-memory/in-memory.unit-of-work'
 import { InMemoryAccountRepository } from '@/infrastructure/repositories/in-memory/in-memory-account.repository'
 import { InMemoryTransferAuthorizerProvider } from '@/providers/transfer-authorizer/in-memory/in-memory-transfer-authorizer.provider'
-import {
-	CreateTransferService,
-	CreateTransferServiceInput,
-} from '@/services/create-transfer.service'
+import { CreateTransferService, CreateTransferServiceInput } from '@/services/create-transfer.service'
 import { AccountNotFoundError } from '@/shared/domain/_errors/account-not-found.error'
 import { InvalidParametersError } from '@/shared/domain/_errors/invalid-parameters.error'
 import { InvalidFormatViolation } from '@/shared/domain/_errors/violations/invalid-format.violation'
 
 const unitOfWork = new InMemoryUnitOfWork()
-const domainService = new CreateTransferDomainService(
-	new InMemoryTransferAuthorizerProvider(true),
-	unitOfWork,
-)
+const domainService = new CreateTransferDomainService(new InMemoryTransferAuthorizerProvider(true), unitOfWork)
 const accountRepository = new InMemoryAccountRepository()
 
 const sut = new CreateTransferService(domainService, accountRepository)

@@ -9,11 +9,7 @@ export class ForbiddenApiError {
 	constructor(private error: AxiosError) {}
 
 	static canHandle(error: Error): error is AxiosError {
-		return !!(
-			isAxiosError(error) &&
-			error.response &&
-			error.response.status === HttpStatusCode.Forbidden
-		)
+		return !!(isAxiosError(error) && error.response && error.response.status === HttpStatusCode.Forbidden)
 	}
 
 	response(): DevitoolsAuthorizeResponse {

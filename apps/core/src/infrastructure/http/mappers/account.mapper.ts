@@ -1,9 +1,6 @@
 import { Account } from '@/domain/account/account'
 import { AccountType } from '@/domain/account/account-type'
-import {
-	AccountEntity,
-	AccountEntityType,
-} from '@/infrastructure/mikro-orm/entities/account.entity'
+import { AccountEntity, AccountEntityType } from '@/infrastructure/mikro-orm/entities/account.entity'
 import { UserEntity } from '@/infrastructure/mikro-orm/entities/user.entity'
 import { Monetary } from '@/shared/domain/monetary'
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
@@ -29,20 +26,13 @@ export class AccountMapper {
 		)
 	}
 
-	static toPersistence(
-		account: Account,
-		userRef: UserEntity,
-		accountRef?: AccountEntity,
-	): AccountEntity {
+	static toPersistence(account: Account, userRef: UserEntity, accountRef?: AccountEntity): AccountEntity {
 		const entity = accountRef ?? new AccountEntity()
 
 		entity.id = account.id.value
 		entity.user = userRef
 		entity.balance = account.balance.value
-		entity.type =
-			account.type === AccountType.COMMON
-				? AccountEntityType.COMMON
-				: AccountEntityType.MERCHANT
+		entity.type = account.type === AccountType.COMMON ? AccountEntityType.COMMON : AccountEntityType.MERCHANT
 
 		return entity
 	}

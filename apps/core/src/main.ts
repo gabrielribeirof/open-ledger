@@ -23,11 +23,7 @@ async function bootstrap() {
 		.setVersion('0.1')
 		.build()
 
-	SwaggerModule.setup(
-		'swagger',
-		app,
-		SwaggerModule.createDocument(app, swaggerConfig),
-	)
+	SwaggerModule.setup('swagger', app, SwaggerModule.createDocument(app, swaggerConfig))
 
 	await app.listen(configService.getOrThrow('HTTP_PORT'))
 }

@@ -1,9 +1,4 @@
-import {
-	type ArgumentsHost,
-	Catch,
-	type ExceptionFilter,
-	Logger,
-} from '@nestjs/common'
+import { type ArgumentsHost, Catch, type ExceptionFilter, Logger } from '@nestjs/common'
 import { type Request, type Response } from 'express'
 
 import { InternalServerError } from '../domain/_errors/internal-server.error'

@@ -1,11 +1,4 @@
-import {
-	DecimalType,
-	Entity,
-	ManyToOne,
-	Opt,
-	PrimaryKey,
-	Property,
-} from '@mikro-orm/core'
+import { DecimalType, Entity, ManyToOne, Opt, PrimaryKey, Property } from '@mikro-orm/core'
 
 import { AccountEntity } from './account.entity'
 

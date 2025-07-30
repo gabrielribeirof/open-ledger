@@ -15,10 +15,7 @@ import {
 } from './schemas/devitools-authorize-response.schema'
 
 @Injectable()
-export class DevitoolsTransferAuthorizerProvider
-	extends HttpClient
-	implements ITransferAuthorizerProvider
-{
+export class DevitoolsTransferAuthorizerProvider extends HttpClient implements ITransferAuthorizerProvider {
 	private static logger = new Logger(DevitoolsTransferAuthorizerProvider.name)
 
 	constructor(
@@ -28,9 +25,7 @@ export class DevitoolsTransferAuthorizerProvider
 		super(
 			DevitoolsTransferAuthorizerProvider.logger,
 			httpService,
-			configService.getOrThrow(
-				ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL,
-			),
+			configService.getOrThrow(ENVIRONMENT_VARIABLES.TRANSFER_AUTHORIZER_SERVICE_URL),
 		)
 	}
 

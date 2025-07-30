@@ -36,9 +36,7 @@ describe('Password', () => {
 			isHashed: false,
 		})
 
-		expect(
-			password.getRight().comparePassword(validPasswordText),
-		).resolves.toBeTruthy()
+		expect(password.getRight().comparePassword(validPasswordText)).resolves.toBeTruthy()
 	})
 
 	it('should be able to compare a hashed password with a hash', () => {
@@ -54,9 +52,7 @@ describe('Password', () => {
 			isHashed: true,
 		})
 
-		expect(
-			hashedPassword.getRight().comparePassword(validPasswordText),
-		).resolves.toBeTruthy()
+		expect(hashedPassword.getRight().comparePassword(validPasswordText)).resolves.toBeTruthy()
 		expect(hashedPassword.getRight().getHashedValue()).toBe(hash)
 	})
 
@@ -70,8 +66,7 @@ describe('Password', () => {
 	})
 
 	it('should not create a password with a value greater than 256 characters', () => {
-		const chars =
-			'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+'
+		const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+'
 
 		const password = Password.create({
 			value: Array(257)

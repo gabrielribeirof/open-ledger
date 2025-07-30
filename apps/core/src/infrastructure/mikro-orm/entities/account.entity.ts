@@ -1,13 +1,4 @@
-import {
-	BigIntType,
-	DecimalType,
-	Entity,
-	Enum,
-	OneToOne,
-	Opt,
-	PrimaryKey,
-	Property,
-} from '@mikro-orm/core'
+import { BigIntType, DecimalType, Entity, Enum, OneToOne, Opt, PrimaryKey, Property } from '@mikro-orm/core'
 
 import { UserEntity } from './user.entity'
 

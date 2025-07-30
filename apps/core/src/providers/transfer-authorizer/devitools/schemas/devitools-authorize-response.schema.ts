@@ -7,6 +7,4 @@ export const devitoolsAuthorizeResponseSchema = z.object({
 	}),
 })
 
-export type DevitoolsAuthorizeResponse = z.infer<
-	typeof devitoolsAuthorizeResponseSchema
->
+export type DevitoolsAuthorizeResponse = z.infer<typeof devitoolsAuthorizeResponseSchema>

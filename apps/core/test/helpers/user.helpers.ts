@@ -24,9 +24,7 @@ export function createUserProps(): Props {
 
 export function createFakeUser(props: Partial<Props> = {}) {
 	const willGenerateCpf = Math.random() > 0.5
-	const documentValue = willGenerateCpf
-		? cpf.generate(false)
-		: cnpj.generate(false)
+	const documentValue = willGenerateCpf ? cpf.generate(false) : cnpj.generate(false)
 
 	const email = Email.create({
 		value: props.email ?? faker.internet.email(),
