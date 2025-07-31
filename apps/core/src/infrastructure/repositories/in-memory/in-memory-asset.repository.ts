@@ -1,0 +1,10 @@
+import { Asset } from '@/domain/asset/asset'
+import { IAssetRepository } from '@/domain/asset/iasset.repository'
+
+export class InMemoryAssetRepository implements IAssetRepository {
+	public assets = new Map<string, Asset>()
+
+	async findByCode(code: string): Promise<Asset | null> {
+		return this.assets.get(code) ?? null
+	}
+}

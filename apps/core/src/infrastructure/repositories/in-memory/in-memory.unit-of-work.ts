@@ -1,10 +1,10 @@
 import { IUnitOfWork } from '@/shared/seedwork/iunit-of-work'
 
 import { InMemoryAccountRepository } from './in-memory-account.repository'
-import { InMemoryTransferRepository } from './in-memory-transfer.repository'
+import { InMemoryTransactionRepository } from './in-memory-transaction.repository'
 
 export class InMemoryUnitOfWork implements IUnitOfWork {
-	transferRepository = new InMemoryTransferRepository()
+	transactionRepository = new InMemoryTransactionRepository()
 	accountRepository = new InMemoryAccountRepository()
 
 	async begin() {}
