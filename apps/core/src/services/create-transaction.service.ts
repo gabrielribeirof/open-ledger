@@ -1,8 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common'
 
-import { ACCOUNT_REPOSITORY_TOKEN, IAccountRepository } from '@/domain/accountv2/iaccount.repository'
+import {
+	ACCOUNT_REPOSITORY_TOKEN,
+	IAccountRepository as IAccountRepositoryV2,
+} from '@/domain/account/iaccount.repository'
 import { ASSET_REPOSITORY_TOKEN, IAssetRepository } from '@/domain/asset/iasset.repository'
+import {
+	AccountDistribution,
+	CreateTransactionDomainService,
+} from '@/domain/services/create-transaction.domain-service'
+import { Transaction } from '@/domain/transaction/transaction'
+import { AccountNotFoundError } from '@/shared/domain/_errors/account-not-found.error'
 import { AssetNotFoundError } from '@/shared/domain/_errors/asset-not-found.error'
+import { InvalidAmountError } from '@/shared/domain/_errors/invalid-amount.error'
 import { InvalidParametersError } from '@/shared/domain/_errors/invalid-parameters.error'
 import { Amount } from '@/shared/domain/amount'
 
@@ -41,60 +51,58 @@ export class CreateTransactionService {
 		@Inject(ASSET_REPOSITORY_TOKEN)
 		private readonly assetRepository: IAssetRepository,
 		@Inject(ACCOUNT_REPOSITORY_TOKEN)
-		private readonly accountRepository: IAccountRepository,
+		private readonly accountRepository: IAccountRepositoryV2,
+		private readonly createTransactionDomainService: CreateTransactionDomainService,
 	) {}
 
-	async execute(input: CreateTransactionServiceInput): Promise<void> {
+	async execute(input: CreateTransactionServiceInput): Promise<Transaction> {
 		const amount = Amount.create({ value: input.value, scale: input.scale })
 
 		if (amount.isLeft()) {
-			throw new InvalidParametersError<CreateTransactionServiceInput>({
-				value: amount.value.value,
-				scale: amount.value.scale,
-			})
+			throw new InvalidParametersError({ amount: [amount.value] })
 		}
 
 		const asset = await this.assetRepository.findByCode(input.asset_code)
 
 		if (!asset) throw new AssetNotFoundError()
 
-		const validateSources = this.validateDistributions(input.sources)
-		const validateTargets = this.validateDistributions(input.targets)
+		const sourceAccountsDistribution = await this.convertToAccountDistributions(input.sources)
+		const targetAccountsDistribution = await this.convertToAccountDistributions(input.targets)
 
-		const violations = {
-			...(Object.keys(validateSources).length > 0 && { sources: validateSources }),
-			...(Object.keys(validateTargets).length > 0 && { targets: validateTargets }),
-		}
-
-		if (Object.keys(violations).length > 0) throw new InvalidParametersError<CreateTransactionServiceInput>(violations)
-
-		// TODO: Continuar com a lógica de criação da transação
+		return this.createTransactionDomainService.execute(
+			amount.value,
+			asset,
+			sourceAccountsDistribution,
+			targetAccountsDistribution,
+		)
 	}
 
-	private validateDistributions(distributions: Distribution[]): Record<number, any> {
-		return distributions.reduce(
-			(violations, distribution, index) => {
-				if ('amount' in distribution) {
-					const amount = Amount.create({
-						value: distribution.amount.value,
-						scale: distribution.amount.scale,
-					})
+	private async convertToAccountDistributions(
+		accountsWithDistributions: Distribution[],
+	): Promise<AccountDistribution[]> {
+		const accountDistributions: AccountDistribution[] = []
 
-					if (amount.isLeft()) {
-						return {
-							...violations,
-							[index]: {
-								amount: {
-									value: amount.value.value,
-									scale: amount.value.scale,
-								},
-							},
-						}
-					}
-				}
-				return violations
-			},
-			{} as Record<number, any>,
-		)
+		for (const { account_alias, ...distribution } of accountsWithDistributions) {
+			const account = await this.accountRepository.findByAlias(account_alias)
+
+			if (!account) throw new AccountNotFoundError()
+
+			if ('amount' in distribution) {
+				const amount = Amount.create({
+					value: distribution.amount.value,
+					scale: distribution.amount.scale,
+				})
+
+				if (amount.isLeft()) throw new InvalidAmountError()
+
+				accountDistributions.push({ account, amount: amount.value })
+			}
+
+			if ('share' in distribution) accountDistributions.push({ account, share: distribution.share })
+
+			if ('remaining' in distribution) accountDistributions.push({ account, remaining: distribution.remaining })
+		}
+
+		return accountDistributions
 	}
 }
