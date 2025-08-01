@@ -2,16 +2,11 @@ import { ValueObject } from '@/shared/seedwork/value-object'
 
 import { Either, left, right } from '../lib/either'
 import { Violation } from '../seedwork/violation'
-import { MinLengthViolation } from './_errors/violations/min-length.violation'
+import { InvalidFormatViolation } from './_errors/violations/invalid-format.violation'
 
 interface AmountProperties {
 	value: bigint
 	scale: number
-}
-
-interface AmountViolationProperties {
-	value?: Violation
-	scale?: Violation
 }
 
 export class Amount extends ValueObject<AmountProperties> {
@@ -23,15 +18,6 @@ export class Amount extends ValueObject<AmountProperties> {
 
 	get scale(): number {
 		return this.properties.scale
-	}
-
-	private static normalize(a: Amount, b: Amount): { v1: bigint; v2: bigint; scale: number } {
-		const commonScale = Math.max(a.scale, b.scale)
-
-		const v1 = a.value * 10n ** BigInt(commonScale - a.scale)
-		const v2 = b.value * 10n ** BigInt(commonScale - b.scale)
-
-		return { v1, v2, scale: commonScale }
 	}
 
 	public add(other: Amount): Amount {
@@ -56,6 +42,15 @@ export class Amount extends ValueObject<AmountProperties> {
 		return v1 === v2
 	}
 
+	private static normalize(a: Amount, b: Amount): { v1: bigint; v2: bigint; scale: number } {
+		const commonScale = Math.max(a.scale, b.scale)
+
+		const v1 = a.value * 10n ** BigInt(commonScale - a.scale)
+		const v2 = b.value * 10n ** BigInt(commonScale - b.scale)
+
+		return { v1, v2, scale: commonScale }
+	}
+
 	private constructor(properties: AmountProperties) {
 		super(properties)
 	}
@@ -64,12 +59,10 @@ export class Amount extends ValueObject<AmountProperties> {
 		return new Amount({ value: 0n, scale: 0 })
 	}
 
-	public static create(properties: AmountProperties): Either<AmountViolationProperties, Amount> {
-		if (properties.value < Amount.MINIMUM_NUMBER) {
-			return left({ value: new MinLengthViolation(Amount.MINIMUM_NUMBER) })
+	public static create(properties: AmountProperties): Either<Violation, Amount> {
+		if (properties.value < Amount.MINIMUM_NUMBER || properties.scale < Amount.MINIMUM_NUMBER) {
+			return left(new InvalidFormatViolation())
 		}
-
-		if (properties.scale < Amount.MINIMUM_NUMBER) return left({ scale: new MinLengthViolation(Amount.MINIMUM_NUMBER) })
 
 		return right(new Amount({ value: properties.value, scale: properties.scale }))
 	}

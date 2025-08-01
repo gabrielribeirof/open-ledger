@@ -13,22 +13,21 @@ export class ErrorFilter implements ExceptionFilter {
 		const request = ctx.getRequest<Request>()
 		const response = ctx.getResponse<Response>()
 
-		function getErrorCodesToHttpStatus(code: ErrorCode) {
+		function getErrorCodesToHttpStatus(code: ErrorCode): HttpStatus {
 			switch (code) {
 				case ErrorCode.INVALID_PARAMETERS:
 				case ErrorCode.INSUFFICIENT_FUNDS:
-				case ErrorCode.UNAUTHORIZED_TRANSFER:
+				case ErrorCode.INVALID_AMOUNT:
 					return HttpStatus.BAD_REQUEST
 				case ErrorCode.ACCOUNT_NOT_FOUND:
+				case ErrorCode.ASSET_NOT_FOUND:
 					return HttpStatus.NOT_FOUND
-				case ErrorCode.TRANSFER_AUTHORIZER_PROVIDER_ERROR:
-				case ErrorCode.INSUFFICIENT_ACCOUNT_TYPE_PERMISSIONS:
-					return HttpStatus.FORBIDDEN
-				case ErrorCode.TRANSFER_AMOUNT_MUST_BE_GREATER_THAN_ZERO:
+				case ErrorCode.TRANSACTION_AMBIGUOUS_ACCOUNT:
+				case ErrorCode.TRANSACTION_MUST_HAVE_AT_LEAST_ONE_DEBIT_AND_CREDIT_OPERATION:
+				case ErrorCode.TRANSACTION_OPERATIONS_TOTAL_AMOUNT_BALANCE:
+				case ErrorCode.TRANSACTION_OPERATIONS_TOTAL_AMOUNT_MISMATCH:
 					return HttpStatus.UNPROCESSABLE_ENTITY
-				case ErrorCode.PROVIDER_NOT_FOUND:
 				case ErrorCode.INTERNAL_SERVER_ERROR:
-				default:
 					return HttpStatus.INTERNAL_SERVER_ERROR
 			}
 		}
