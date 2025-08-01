@@ -1,8 +1,8 @@
 import { IAccountRepository } from '@/domain/account/iaccount.repository'
-import { ITransferRepository } from '@/domain/transfer/itransfer.repository'
+import { ITransactionRepository } from '@/domain/transaction/itransaction.repository'
 
 export interface IUnitOfWork {
-	transferRepository: ITransferRepository
+	transactionRepository: ITransactionRepository
 	accountRepository: IAccountRepository
 	begin(): Promise<void>
 	commit(): Promise<void>
