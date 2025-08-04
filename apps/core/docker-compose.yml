@@ -50,14 +50,11 @@ services:
     build: .
     env_file:
       - .env
-    environment:
-      MIKRO_ORM_DEBUG: true
     ports:
       - 3000:3000
-    command: yarn start:dev
+    command: yarn start:debug
     volumes:
       - .:/core-app
-      - /core-app/node_modules
     depends_on:
       database:
         condition: service_healthy
