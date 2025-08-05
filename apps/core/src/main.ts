@@ -1,9 +1,11 @@
-import { ValidationPipe } from '@nestjs/common'
+import { HttpStatus, ValidationPipe } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { DocumentBuilder, getSchemaPath, SwaggerModule } from '@nestjs/swagger'
 
 import { AppModule } from './app.module'
+import { ErrorDTO } from './shared/lib/error.dto'
+import { InvalidParametersErrorDTO } from './shared/lib/invalid-parameters.error.dto'
 import { parseValidationErrorsToErrorsUtil } from './shared/utils/parse-validation-errors-to-errors.util'
 
 async function bootstrap() {
@@ -21,9 +23,21 @@ async function bootstrap() {
 	const swaggerConfig = new DocumentBuilder()
 		.setTitle(`OpenLedger API (${configService.get('NODE_ENV')})`)
 		.setVersion('0.1')
+		.addGlobalResponse({
+			status: HttpStatus.INTERNAL_SERVER_ERROR,
+			schema: {
+				$ref: getSchemaPath(ErrorDTO),
+			},
+		})
 		.build()
 
-	SwaggerModule.setup('swagger', app, SwaggerModule.createDocument(app, swaggerConfig))
+	SwaggerModule.setup(
+		'swagger',
+		app,
+		SwaggerModule.createDocument(app, swaggerConfig, {
+			extraModels: [ErrorDTO, InvalidParametersErrorDTO],
+		}),
+	)
 
 	await app.listen(configService.getOrThrow('HTTP_PORT'))
 }
