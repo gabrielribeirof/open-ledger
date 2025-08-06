@@ -45,6 +45,6 @@ describe('parseValidationErrorsToErrorsUtil', () => {
 
 		const result = parseValidationErrorsToErrorsUtil(validationErrors)
 
-		expect(result.violations).toBeUndefined()
+		expect(result.violations).toStrictEqual({})
 	})
 })
