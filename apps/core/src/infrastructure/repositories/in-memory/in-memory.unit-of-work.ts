@@ -7,9 +7,15 @@ export class InMemoryUnitOfWork implements IUnitOfWork {
 	transactionRepository = new InMemoryTransactionRepository()
 	accountRepository = new InMemoryAccountRepository()
 
-	async begin() {}
+	async begin() {
+		return Promise.resolve()
+	}
 
-	async commit() {}
+	async commit() {
+		return Promise.resolve()
+	}
 
-	async rollback() {}
+	async rollback() {
+		return Promise.resolve()
+	}
 }
