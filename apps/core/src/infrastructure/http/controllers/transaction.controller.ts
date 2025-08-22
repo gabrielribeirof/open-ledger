@@ -14,7 +14,7 @@ import { TransactionMapper } from '../mappers/transaction.mapper'
 @ApiExtraModels(TransactionDTO)
 @ApiExtraModels(OperationDTO)
 export class TransactionController {
-	constructor(private createTransactionService: CreateTransactionService) {}
+	constructor(private readonly createTransactionService: CreateTransactionService) {}
 
 	@Post()
 	@ApiCreatedResponse({
