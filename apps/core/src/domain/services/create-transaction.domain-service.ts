@@ -83,7 +83,7 @@ export class CreateTransactionDomainService {
 				if (operation.isDebit()) {
 					const accountAmount = sourceAmountPerAccount.find((source) => source.account.id.equals(operation.account_id))
 
-					if (!accountAmount) throw new Error(`Amount not calculated for source account ${operation.account_id}`)
+					if (!accountAmount) throw new Error(`Amount not calculated for source account ${operation.account_id.value}`)
 
 					accountAmount.account.withdraw(accountAmount.amount)
 					await this.unitOfWork.accountRepository.save(accountAmount.account)
@@ -92,7 +92,7 @@ export class CreateTransactionDomainService {
 				if (operation.isCredit()) {
 					const accountAmount = targetAmountPerAccount.find((target) => target.account.id.equals(operation.account_id))
 
-					if (!accountAmount) throw new Error(`Amount not calculated for target account ${operation.account_id}`)
+					if (!accountAmount) throw new Error(`Amount not calculated for target account ${operation.account_id.value}`)
 
 					accountAmount.account.deposit(accountAmount.amount)
 					await this.unitOfWork.accountRepository.save(accountAmount.account)
