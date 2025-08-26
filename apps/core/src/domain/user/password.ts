@@ -43,7 +43,7 @@ export class Password extends ValueObject<PasswordProperties> {
 		const value = props.value.trim()
 
 		if (value.length < 6 || value.length > 256) {
-			return left(new BadLengthViolation(6, 256, 'números'))
+			return left(new BadLengthViolation(6, 256))
 		}
 
 		return right(new Password(props))
