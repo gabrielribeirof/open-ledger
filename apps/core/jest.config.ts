@@ -1,7 +1,10 @@
 import { Config } from '@jest/types'
+import * as fs from 'fs'
+import * as path from 'path'
 import { pathsToModuleNameMapper } from 'ts-jest'
 
-import { compilerOptions } from './tsconfig.json'
+const tsconfig = JSON.parse(fs.readFileSync(path.join(__dirname, 'tsconfig.json'), 'utf8'))
+const { compilerOptions } = tsconfig
 
 const config: Config.InitialOptions = {
 	roots: ['src', 'test'],
