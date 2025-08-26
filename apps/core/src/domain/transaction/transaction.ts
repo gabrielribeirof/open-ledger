@@ -22,13 +22,6 @@ export interface Distribution {
 	amount: Amount
 }
 
-interface TransactionCreateInput {
-	amount: Amount
-	asset_id: UniqueIdentifier
-	source_distributions: Distribution[]
-	target_distributions: Distribution[]
-}
-
 export class Transaction extends AggregateRoot<TransactionProperties> {
 	get amount(): Amount {
 		return this.properties.amount
@@ -46,30 +39,14 @@ export class Transaction extends AggregateRoot<TransactionProperties> {
 		super(properties, id)
 	}
 
-	static create(input: TransactionCreateInput, id?: UniqueIdentifier): Either<Error, Transaction> {
-		const sourceOperations = input.source_distributions.map((source) =>
-			Operation.create({
-				amount: source.amount,
-				type: OperationType.DEBIT,
-				account_id: source.account_id,
-			}),
-		)
+	static create(properties: TransactionProperties, id?: UniqueIdentifier): Either<Error, Transaction> {
+		const { amount, asset_id, operations } = properties
 
-		const targetOperations = input.target_distributions.map((target) =>
-			Operation.create({
-				amount: target.amount,
-				type: OperationType.CREDIT,
-				account_id: target.account_id,
-			}),
-		)
+		const hasDuplicateOperationAccount = operations.some((x, index) => {
+			return operations.findIndex((y) => y.account_id.equals(x.account_id)) !== index
+		})
 
-		const operations = [...sourceOperations, ...targetOperations]
-
-		const hasSomeAmbiguousOperationAccount = operations.some((operation) =>
-			operations.some((other) => other.account_id.equals(operation.account_id)),
-		)
-
-		if (hasSomeAmbiguousOperationAccount) return left(new TransactionAmbiguousAccountError())
+		if (hasDuplicateOperationAccount) return left(new TransactionAmbiguousAccountError())
 
 		const hasAtLeastOneDebitAndCreditOperation =
 			operations.some((operation) => operation.type === OperationType.DEBIT) &&
@@ -90,15 +67,15 @@ export class Transaction extends AggregateRoot<TransactionProperties> {
 			return left(new TransactionOperationsTotalAmountBalanceError())
 		}
 
-		if (!debitOperationsAmount.equals(input.amount)) {
+		if (!debitOperationsAmount.equals(amount)) {
 			return left(new TransactionOperationsTotalAmountMismatchError())
 		}
 
 		return right(
 			new Transaction(
 				{
-					amount: input.amount,
-					asset_id: input.asset_id,
+					amount,
+					asset_id,
 					operations,
 				},
 				id,

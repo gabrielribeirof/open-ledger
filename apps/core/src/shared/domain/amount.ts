@@ -30,9 +30,9 @@ export class Amount extends ValueObject<AmountProperties> {
 		return new Amount({ value: v1 - v2, scale })
 	}
 
-	public multiply(factor: number): Amount {
+	public multiply(factor: Amount): Amount {
 		const { v1, scale } = Amount.normalize(this, Amount.zero())
-		return new Amount({ value: v1 * BigInt(factor), scale })
+		return new Amount({ value: v1 * BigInt(factor.value), scale })
 	}
 
 	public equals(other: Amount): boolean {
@@ -42,6 +42,21 @@ export class Amount extends ValueObject<AmountProperties> {
 		return v1 === v2
 	}
 
+	public isZero(): boolean {
+		return this.value === 0n
+	}
+
+	public percentage(percent: number): Amount {
+		if (percent < 0 || percent > 100) throw new Error('Percentage must be between 0 and 100')
+
+		const percentageValue = (this.value * BigInt(percent)) / 100n
+		return new Amount({ value: percentageValue, scale: this.scale })
+	}
+
+	private constructor(properties: AmountProperties) {
+		super(properties)
+	}
+
 	private static normalize(a: Amount, b: Amount): { v1: bigint; v2: bigint; scale: number } {
 		const commonScale = Math.max(a.scale, b.scale)
 
@@ -49,10 +64,6 @@ export class Amount extends ValueObject<AmountProperties> {
 		const v2 = b.value * 10n ** BigInt(commonScale - b.scale)
 
 		return { v1, v2, scale: commonScale }
-	}
-
-	private constructor(properties: AmountProperties) {
-		super(properties)
 	}
 
 	public static zero(): Amount {
