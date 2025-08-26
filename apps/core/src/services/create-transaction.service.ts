@@ -6,8 +6,8 @@ import {
 } from '@/domain/account/iaccount.repository'
 import { ASSET_REPOSITORY_TOKEN, IAssetRepository } from '@/domain/asset/iasset.repository'
 import {
-	AccountDistribution,
 	CreateTransactionDomainService,
+	Distribution as DomainDistribution,
 } from '@/domain/services/create-transaction.domain-service'
 import { Transaction } from '@/domain/transaction/transaction'
 import { AccountNotFoundError } from '@/shared/domain/_errors/account-not-found.error'
@@ -58,31 +58,26 @@ export class CreateTransactionService {
 	async execute(input: CreateTransactionServiceInput): Promise<Transaction> {
 		const amount = Amount.create({ value: input.value, scale: input.scale })
 
-		if (amount.isLeft()) {
-			throw new InvalidParametersError({ amount: [amount.value] })
-		}
+		if (amount.isLeft()) throw new InvalidParametersError({ amount: [amount.value] })
 
 		const asset = await this.assetRepository.findByCode(input.asset_code)
 
 		if (!asset) throw new AssetNotFoundError()
 
-		const sourceAccountsDistribution = await this.convertToAccountDistributions(input.sources)
-		const targetAccountsDistribution = await this.convertToAccountDistributions(input.targets)
-
-		return this.createTransactionDomainService.execute(
-			amount.value,
+		return this.createTransactionDomainService.execute({
 			asset,
-			sourceAccountsDistribution,
-			targetAccountsDistribution,
-		)
+			amount: amount.value,
+			sources: await this.convertDistributionsToDomainDistributions(input.sources),
+			targets: await this.convertDistributionsToDomainDistributions(input.targets),
+		})
 	}
 
-	private async convertToAccountDistributions(
-		accountsWithDistributions: Distribution[],
-	): Promise<AccountDistribution[]> {
-		const accountDistributions: AccountDistribution[] = []
+	private async convertDistributionsToDomainDistributions(
+		distributions: Distribution[],
+	): Promise<DomainDistribution[]> {
+		const accountDistributions: DomainDistribution[] = []
 
-		for (const { account_alias, ...distribution } of accountsWithDistributions) {
+		for (const { account_alias, ...distribution } of distributions) {
 			const account = await this.accountRepository.findByAlias(account_alias)
 
 			if (!account) throw new AccountNotFoundError()

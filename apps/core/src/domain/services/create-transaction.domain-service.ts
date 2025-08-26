@@ -5,6 +5,8 @@ import { IUnitOfWork, UNIT_OF_WORK } from '@/shared/seedwork/iunit-of-work'
 
 import { Account } from '../account/account'
 import { Asset } from '../asset/asset'
+import { Operation } from '../transaction/operation'
+import { OperationType } from '../transaction/operation-type'
 import { Transaction } from '../transaction/transaction'
 
 interface AmountDistributionStrategy {
@@ -21,34 +23,55 @@ interface RemainingDistributionStrategy {
 
 type DistributionStrategy = AmountDistributionStrategy | ShareDistributionStrategy | RemainingDistributionStrategy
 
-export type AccountDistribution = DistributionStrategy & {
+export type Distribution = DistributionStrategy & {
 	account: Account
+}
+
+export interface CreateTransactionDomainServiceInput {
+	amount: Amount
+	asset: Asset
+	sources: Distribution[]
+	targets: Distribution[]
 }
 
 @Injectable()
 export class CreateTransactionDomainService {
 	constructor(@Inject(UNIT_OF_WORK) private readonly unitOfWork: IUnitOfWork) {}
 
-	public execute(
-		amount: Amount,
-		asset: Asset,
-		sourceAccountsDistribution: AccountDistribution[],
-		targetAccountsDistribution: AccountDistribution[],
-	): Transaction {
-		const sourceAccountsAmount = this.calculateAccountAmount(sourceAccountsDistribution, amount)
-		const targetAccountsAmount = this.calculateAccountAmount(targetAccountsDistribution, amount)
+	public async execute(input: CreateTransactionDomainServiceInput): Promise<Transaction> {
+		const sourceAmountPerAccount = this.calculateAmountPerAccountInADistribution(input.sources, input.amount)
+		const targetAmountPerAccount = this.calculateAmountPerAccountInADistribution(input.targets, input.amount)
+
+		const operations = sourceAmountPerAccount
+			.map((distribution) => {
+				const operation = Operation.create({
+					account_id: distribution.account.id,
+					amount: distribution.amount,
+					type: OperationType.DEBIT,
+				})
+
+				if (operation.isLeft()) throw operation.value
+
+				return operation.value
+			})
+			.concat(
+				targetAmountPerAccount.map((distribution) => {
+					const operation = Operation.create({
+						account_id: distribution.account.id,
+						amount: distribution.amount,
+						type: OperationType.CREDIT,
+					})
+
+					if (operation.isLeft()) throw operation.value
+
+					return operation.value
+				}),
+			)
 
 		const transaction = Transaction.create({
-			amount,
-			asset_id: asset.id,
-			source_distributions: sourceAccountsAmount.map((distribution) => ({
-				account_id: distribution.account.id,
-				amount: distribution.amount,
-			})),
-			target_distributions: targetAccountsAmount.map((distribution) => ({
-				account_id: distribution.account.id,
-				amount: distribution.amount,
-			})),
+			asset_id: input.asset.id,
+			amount: input.amount,
+			operations,
 		})
 
 		if (transaction.isLeft()) throw transaction.value
@@ -56,66 +79,60 @@ export class CreateTransactionDomainService {
 		this.unitOfWork.begin()
 
 		try {
-			transaction.value.operations.forEach((operation) => {
+			for (const operation of transaction.value.operations) {
 				if (operation.isDebit()) {
-					const accountAmount = sourceAccountsAmount.find((source) => source.account.id.equals(operation.account_id))
+					const accountAmount = sourceAmountPerAccount.find((source) => source.account.id.equals(operation.account_id))
 
 					if (!accountAmount) throw new Error(`Amount not calculated for source account ${operation.account_id}`)
 
 					accountAmount.account.withdraw(accountAmount.amount)
-					this.unitOfWork.accountRepository.save(accountAmount.account)
+					await this.unitOfWork.accountRepository.save(accountAmount.account)
 				}
 
 				if (operation.isCredit()) {
-					const accountAmount = targetAccountsAmount.find((target) => target.account.id.equals(operation.account_id))
+					const accountAmount = targetAmountPerAccount.find((target) => target.account.id.equals(operation.account_id))
 
 					if (!accountAmount) throw new Error(`Amount not calculated for target account ${operation.account_id}`)
 
 					accountAmount.account.deposit(accountAmount.amount)
-					this.unitOfWork.accountRepository.save(accountAmount.account)
+					await this.unitOfWork.accountRepository.save(accountAmount.account)
 				}
-			})
+			}
 
-			this.unitOfWork.transactionRepository.save(transaction.value)
+			await this.unitOfWork.transactionRepository.save(transaction.value)
+			await this.unitOfWork.commit()
 		} catch (error) {
-			this.unitOfWork.rollback(error)
+			await this.unitOfWork.rollback(error)
 			throw error
 		}
-
-		this.unitOfWork.commit()
 
 		return transaction.value
 	}
 
-	private calculateAccountAmount(
-		distributions: AccountDistribution[],
-		totalAmount: Amount,
-	): Array<{ account: Account; amount: Amount }> {
-		const accountAmounts: Array<{ account: Account; amount: Amount }> = []
+	private calculateAmountPerAccountInADistribution(distributions: Distribution[], totalAmount: Amount) {
+		const result: Array<{ account: Account; amount: Amount }> = []
 
-		const total = Amount.zero()
-		const remaining = Amount.create({ value: totalAmount.value, scale: totalAmount.scale }).getRight()
+		let remaining = Amount.create({ value: totalAmount.value, scale: totalAmount.scale }).getRight()
 
 		for (const distribution of distributions) {
 			if ('share' in distribution) {
-				const shareAmount = totalAmount.multiply(distribution.share / 100)
-				total.add(shareAmount)
-				remaining.subtract(shareAmount)
-				accountAmounts.push({ account: distribution.account, amount: shareAmount })
+				const shareAmount = totalAmount.percentage(distribution.share)
+				remaining = remaining.subtract(shareAmount)
+				result.push({ account: distribution.account, amount: shareAmount })
 			} else if ('amount' in distribution) {
-				total.add(distribution.amount)
-				remaining.subtract(distribution.amount)
-				accountAmounts.push({ account: distribution.account, amount: distribution.amount })
-			} else if ('remaining' in distribution) {
-				total.add(remaining)
-				remaining.subtract(remaining)
-				accountAmounts.push({
-					account: distribution.account,
-					amount: Amount.create({ value: remaining.value, scale: remaining.scale }).getRight(),
-				})
+				remaining = remaining.subtract(distribution.amount)
+				result.push({ account: distribution.account, amount: distribution.amount })
 			}
 		}
 
-		return accountAmounts
+		const remainingDistributions = distributions.filter((distribution) => 'remaining' in distribution)
+
+		if (remainingDistributions.length > 0) {
+			for (const distribution of remainingDistributions) {
+				result.push({ account: distribution.account, amount: remaining })
+			}
+		}
+
+		return result
 	}
 }
