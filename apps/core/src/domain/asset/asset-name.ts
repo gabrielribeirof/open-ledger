@@ -26,6 +26,6 @@ export class AssetName extends ValueObject<AssetNameProperties> {
 			return left(new BadLengthViolation(AssetName.MIN_LENGTH, AssetName.MAX_LENGTH))
 		}
 
-		return right(new AssetName(properties))
+		return right(new AssetName({ value }))
 	}
 }
