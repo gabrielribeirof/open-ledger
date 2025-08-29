@@ -5,10 +5,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug OpenLedger API",
+      "name": "Debug Core",
       "type": "node",
       "request": "attach",
       "address": "127.0.0.1",
+      "remoteRoot": "/core-app",
       "port": 9229
     }
   ]
