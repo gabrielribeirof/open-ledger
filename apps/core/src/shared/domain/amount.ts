@@ -32,11 +32,6 @@ export class Amount extends ValueObject<AmountProperties> {
 		return new Amount({ value: v1 - v2, scale })
 	}
 
-	public multiply(factor: Amount): Amount {
-		const { v1, scale } = Amount.normalize(this, Amount.zero())
-		return new Amount({ value: v1 * BigInt(factor.value), scale })
-	}
-
 	public equals(other: Amount): boolean {
 		if (this.value === other.value) return this.scale === other.scale
 
@@ -62,19 +57,8 @@ export class Amount extends ValueObject<AmountProperties> {
 	private static normalize(a: Amount, b: Amount): { v1: bigint; v2: bigint; scale: number } {
 		const commonScale = Math.max(a.scale, b.scale)
 
-		let v1: bigint, v2: bigint
-
-		if (a.scale <= commonScale) {
-			v1 = a.value * 10n ** BigInt(commonScale - a.scale)
-		} else {
-			v1 = a.value / 10n ** BigInt(a.scale - commonScale)
-		}
-
-		if (b.scale <= commonScale) {
-			v2 = b.value * 10n ** BigInt(commonScale - b.scale)
-		} else {
-			v2 = b.value / 10n ** BigInt(b.scale - commonScale)
-		}
+		const v1 = a.value * 10n ** BigInt(commonScale - a.scale)
+		const v2 = b.value * 10n ** BigInt(commonScale - b.scale)
 
 		return { v1, v2, scale: commonScale }
 	}
