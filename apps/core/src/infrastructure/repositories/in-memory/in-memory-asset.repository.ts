@@ -7,4 +7,8 @@ export class InMemoryAssetRepository implements IAssetRepository {
 	async findByCode(code: string): Promise<Asset | null> {
 		return this.assets.get(code) ?? null
 	}
+
+	async save(asset: Asset): Promise<void> {
+		this.assets.set(asset.code.value, asset)
+	}
 }
