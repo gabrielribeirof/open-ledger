@@ -24,10 +24,12 @@ interface GenerateFakeAccountProperties {
 }
 
 export function generateFakeAccount(properties: GenerateFakeAccountProperties = {}) {
-	return Account.create({
-		amount: properties.amount ?? generateFakeAmount().getRight(),
+	const account = Account.create({
 		asset_code: properties.assetCode ?? generateFakeAssetCodeValue(),
 		alias: properties.alias ?? generateFakeAccountAlias(),
-		version: properties.version ?? 1,
 	})
+
+	const amount = properties.amount ?? generateFakeAmount().getRight()
+
+	account.deposit(amount)
 }

@@ -13,6 +13,11 @@ interface AccountProperties {
 	version: number
 }
 
+interface AccountCreateProperties {
+	asset_code: AssetCode
+	alias: AccountAlias
+}
+
 export class Account extends AggregateRoot<AccountProperties> {
 	get amount() {
 		return this.properties.amount
@@ -44,7 +49,14 @@ export class Account extends AggregateRoot<AccountProperties> {
 		super(props, id)
 	}
 
-	public static create(props: AccountProperties, id?: UniqueIdentifier): Account {
-		return new Account(props, id)
+	public static create(props: AccountCreateProperties, id?: UniqueIdentifier): Account {
+		return new Account(
+			{
+				...props,
+				amount: Amount.zero(),
+				version: 1,
+			},
+			id,
+		)
 	}
 }
