@@ -19,6 +19,9 @@ export class ErrorFilter implements ExceptionFilter {
 				case ErrorCode.INSUFFICIENT_FUNDS:
 				case ErrorCode.INVALID_AMOUNT:
 					return HttpStatus.BAD_REQUEST
+				case ErrorCode.ALREADY_EXISTS:
+					return HttpStatus.CONFLICT
+				case ErrorCode.NOT_FOUND:
 				case ErrorCode.ACCOUNT_NOT_FOUND:
 				case ErrorCode.ASSET_NOT_FOUND:
 					return HttpStatus.NOT_FOUND
