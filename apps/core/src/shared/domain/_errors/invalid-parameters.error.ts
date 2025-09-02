@@ -3,7 +3,7 @@ import { Violation } from '@/shared/seedwork/violation'
 import { Error } from '../../seedwork/error'
 import { ErrorCode } from '../../seedwork/error-code'
 
-type ViolationValue = Violation[] | NestedViolations
+type ViolationValue = Violation[] | NestedViolations | null
 type NestedViolations = { [key: string]: ViolationValue }
 
 export class InvalidParametersError extends Error {
