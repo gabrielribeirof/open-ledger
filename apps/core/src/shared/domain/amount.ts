@@ -11,6 +11,8 @@ interface AmountProperties {
 
 export class Amount extends ValueObject<AmountProperties> {
 	static readonly MINIMUM_NUMBER = 0
+	static readonly MAXIMUM_VALUE = 9223372036854775807n
+	static readonly MAXIMUM_SCALE = 64
 
 	get value(): bigint {
 		return this.properties.value
@@ -60,8 +62,19 @@ export class Amount extends ValueObject<AmountProperties> {
 	private static normalize(a: Amount, b: Amount): { v1: bigint; v2: bigint; scale: number } {
 		const commonScale = Math.max(a.scale, b.scale)
 
-		const v1 = a.value * 10n ** BigInt(commonScale - a.scale)
-		const v2 = b.value * 10n ** BigInt(commonScale - b.scale)
+		let v1: bigint, v2: bigint
+
+		if (a.scale <= commonScale) {
+			v1 = a.value * 10n ** BigInt(commonScale - a.scale)
+		} else {
+			v1 = a.value / 10n ** BigInt(a.scale - commonScale)
+		}
+
+		if (b.scale <= commonScale) {
+			v2 = b.value * 10n ** BigInt(commonScale - b.scale)
+		} else {
+			v2 = b.value / 10n ** BigInt(b.scale - commonScale)
+		}
 
 		return { v1, v2, scale: commonScale }
 	}
@@ -72,6 +85,14 @@ export class Amount extends ValueObject<AmountProperties> {
 
 	public static create(properties: AmountProperties): Either<Violation, Amount> {
 		if (properties.value < Amount.MINIMUM_NUMBER || properties.scale < Amount.MINIMUM_NUMBER) {
+			return left(new InvalidFormatViolation())
+		}
+
+		if (properties.value > Amount.MAXIMUM_VALUE) {
+			return left(new InvalidFormatViolation())
+		}
+
+		if (properties.scale > Amount.MAXIMUM_SCALE) {
 			return left(new InvalidFormatViolation())
 		}
 
