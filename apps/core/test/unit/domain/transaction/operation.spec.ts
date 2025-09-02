@@ -13,7 +13,7 @@ describe('Operation', () => {
 	})
 
 	it('should not create an operation with zeroed amount', () => {
-		const amount = generateFakeAmount({ value: 0n })
+		const amount = generateFakeAmount({ value: 0n }).getRight()
 		const operation = generateFakeOperation({ amount })
 		expect(operation.isLeft()).toBeTruthy()
 		expect(operation.value).toBeInstanceOf(InvalidAmountError)
@@ -23,7 +23,7 @@ describe('Operation', () => {
 		it('should return true for debit operation', () => {
 			const operation = Operation.create({
 				account_id: new UniqueIdentifier(),
-				amount: generateFakeAmount(),
+				amount: generateFakeAmount().getRight(),
 				type: OperationType.DEBIT,
 			}).getRight()
 			expect(operation.isDebit()).toBe(true)
@@ -34,7 +34,7 @@ describe('Operation', () => {
 		it('should return true for credit operation', () => {
 			const operation = Operation.create({
 				account_id: new UniqueIdentifier(),
-				amount: generateFakeAmount(),
+				amount: generateFakeAmount().getRight(),
 				type: OperationType.CREDIT,
 			}).getRight()
 			expect(operation.isCredit()).toBe(true)

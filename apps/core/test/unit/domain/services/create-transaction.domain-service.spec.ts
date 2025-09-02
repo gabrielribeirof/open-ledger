@@ -14,7 +14,7 @@ function executeSut(
 	properties: Partial<Parameters<CreateTransactionDomainService['execute']>[0]> = {},
 	unitOfWork: IUnitOfWork = generateFakeUnitOfWork(),
 ) {
-	const amount = properties.amount ?? generateFakeAmount()
+	const amount = properties.amount ?? generateFakeAmount().getRight()
 	const asset = properties.asset ?? generateFakeAsset()
 
 	return new CreateTransactionDomainService(unitOfWork).execute({
@@ -37,7 +37,7 @@ function executeSut(
 
 describe('CreateTransactionDomainService', () => {
 	it('should create a transaction when valid inputs', async () => {
-		const amount = generateFakeAmount()
+		const amount = generateFakeAmount().getRight()
 
 		const sut = await executeSut({ amount })
 
@@ -47,7 +47,7 @@ describe('CreateTransactionDomainService', () => {
 	})
 
 	it('should create a transaction with shared', async () => {
-		const amount = generateFakeAmount({ value: faker.number.bigInt({ min: 2 }) })
+		const amount = generateFakeAmount({ value: faker.number.bigInt({ min: 2 }) }).getRight()
 		const asset = generateFakeAsset()
 
 		const percentageOfAmount = faker.number.int({ min: 1, max: 99 })
@@ -83,13 +83,13 @@ describe('CreateTransactionDomainService', () => {
 	})
 
 	it('should create a transaction with remaining', async () => {
-		const amount = generateFakeAmount({ value: faker.number.bigInt({ min: 2 }) })
+		const amount = generateFakeAmount({ value: faker.number.bigInt({ min: 2 }) }).getRight()
 		const asset = generateFakeAsset()
 
 		const subtractionAmount = generateFakeAmount({
 			value: faker.number.bigInt({ min: 1, max: amount.value - 1n }),
 			scale: amount.scale,
-		})
+		}).getRight()
 		const sut = await executeSut({
 			amount,
 			asset,
@@ -126,7 +126,7 @@ describe('CreateTransactionDomainService', () => {
 				sources: [
 					{
 						account: generateFakeAccount(),
-						amount: generateFakeAmount({ value: 0n }),
+						amount: generateFakeAmount({ value: 0n }).getRight(),
 					},
 				],
 			}),
@@ -139,7 +139,7 @@ describe('CreateTransactionDomainService', () => {
 				targets: [
 					{
 						account: generateFakeAccount(),
-						amount: generateFakeAmount({ value: 0n }),
+						amount: generateFakeAmount({ value: 0n }).getRight(),
 					},
 				],
 			}),

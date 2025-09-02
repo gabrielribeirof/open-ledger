@@ -14,7 +14,7 @@ export interface GenerateFakeOperationProperties {
 export function generateFakeOperation(props: GenerateFakeOperationProperties = {}) {
 	return Operation.create({
 		account_id: props.account_id ?? new UniqueIdentifier(),
-		amount: props.amount ?? generateFakeAmount(),
+		amount: props.amount ?? generateFakeAmount().getRight(),
 		type: props.type ?? (Math.random() > 0.5 ? OperationType.DEBIT : OperationType.CREDIT),
 	})
 }

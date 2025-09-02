@@ -52,7 +52,7 @@ describe('Transaction', () => {
 	})
 
 	it('should not create a transaction when amount does not match operations total', () => {
-		const amount = generateFakeAmount()
+		const amount = generateFakeAmount().getRight()
 
 		const operation1 = generateFakeOperation({ type: OperationType.DEBIT, amount }).getRight()
 		const operation2 = generateFakeOperation({ type: OperationType.CREDIT, amount }).getRight()

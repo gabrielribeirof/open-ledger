@@ -13,7 +13,7 @@ interface GenerateFakeTransactionProperties {
 }
 
 export function generateFakeTransaction(props: GenerateFakeTransactionProperties = {}) {
-	const amount = generateFakeAmount(props.amount)
+	const amount = generateFakeAmount(props.amount).getRight()
 
 	return Transaction.create({
 		amount,

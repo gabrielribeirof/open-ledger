@@ -25,7 +25,7 @@ interface GenerateFakeAccountProperties {
 
 export function generateFakeAccount(properties: GenerateFakeAccountProperties = {}) {
 	return Account.create({
-		amount: properties.amount ?? generateFakeAmount(),
+		amount: properties.amount ?? generateFakeAmount().getRight(),
 		asset_code: properties.assetCode ?? generateFakeAssetCodeValue(),
 		alias: properties.alias ?? generateFakeAccountAlias(),
 		version: properties.version ?? 1,

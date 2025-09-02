@@ -7,7 +7,7 @@ describe('Account', () => {
 	it('should deposit', () => {
 		const account = generateFakeAccount()
 		const initialAccountAmount = account.amount
-		const amount = generateFakeAmount()
+		const amount = generateFakeAmount().getRight()
 
 		account.deposit(amount)
 
@@ -17,7 +17,7 @@ describe('Account', () => {
 	it('should withdraw', () => {
 		const account = generateFakeAccount()
 		const initialAccountAmount = account.amount
-		const amount = generateFakeAmount()
+		const amount = generateFakeAmount().getRight()
 		account.deposit(amount)
 
 		account.withdraw(amount)
@@ -27,7 +27,7 @@ describe('Account', () => {
 
 	it('should not withdraw if insufficient funds', () => {
 		const account = generateFakeAccount()
-		const amount = account.amount.add(generateFakeAmount())
+		const amount = account.amount.add(generateFakeAmount().getRight())
 
 		expect(() => account.withdraw(amount)).toThrow(InsufficientFundsError)
 	})
