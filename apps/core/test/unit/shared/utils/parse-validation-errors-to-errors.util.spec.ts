@@ -1,4 +1,4 @@
-import { ValidationError } from '@nestjs/common'
+import type { ValidationError } from '@nestjs/common'
 
 import { InvalidParametersError } from '../../../../src/shared/domain/_errors/invalid-parameters.error'
 import { parseValidationErrorsToErrorsUtil } from '../../../../src/shared/utils/parse-validation-errors-to-errors.util'

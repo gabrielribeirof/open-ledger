@@ -1,9 +1,10 @@
-import { Operation } from '@/domain/transaction/operation'
+import type { Operation } from '@/domain/transaction/operation'
 import { OperationType } from '@/domain/transaction/operation-type'
 import { Transaction } from '@/domain/transaction/transaction'
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
 
-import { generateFakeAmount, GenerateFakeAmountProperties } from './amount.helpers'
+import type { GenerateFakeAmountProperties } from './amount.helpers'
+import { generateFakeAmount } from './amount.helpers'
 import { generateFakeOperation } from './operation.helper'
 
 interface GenerateFakeTransactionProperties {

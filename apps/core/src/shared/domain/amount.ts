@@ -1,7 +1,8 @@
 import { ValueObject } from '@/shared/seedwork/value-object'
 
-import { Either, left, right } from '../lib/either'
-import { Violation } from '../seedwork/violation'
+import type { Either } from '../lib/either'
+import { left, right } from '../lib/either'
+import type { Violation } from '../seedwork/violation'
 import { InvalidFormatViolation } from './_errors/violations/invalid-format.violation'
 
 interface AmountProperties {

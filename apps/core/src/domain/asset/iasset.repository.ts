@@ -1,4 +1,4 @@
-import { Asset } from './asset'
+import type { Asset } from './asset'
 
 export interface IAssetRepository {
 	findByCode(code: string): Promise<Asset | null>

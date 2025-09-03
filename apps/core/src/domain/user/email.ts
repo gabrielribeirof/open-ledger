@@ -1,9 +1,10 @@
 import { isEmail } from 'class-validator'
 
 import { InvalidFormatViolation } from '@/shared/domain/_errors/violations/invalid-format.violation'
-import { Either, left, right } from '@/shared/lib/either'
+import type { Either } from '@/shared/lib/either'
+import { left, right } from '@/shared/lib/either'
 import { ValueObject } from '@/shared/seedwork/value-object'
-import { Violation } from '@/shared/seedwork/violation'
+import type { Violation } from '@/shared/seedwork/violation'
 
 interface EmailProperties {
 	value: string

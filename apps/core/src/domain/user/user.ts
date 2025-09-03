@@ -1,9 +1,9 @@
 import { AggregateRoot } from '@/shared/seedwork/aggregate-root'
-import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
+import type { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
 
-import { Document } from './document'
-import { Email } from './email'
-import { Password } from './password'
+import type { Document } from './document'
+import type { Email } from './email'
+import type { Password } from './password'
 
 interface UserProperties {
 	name: string

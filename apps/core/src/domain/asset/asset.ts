@@ -1,8 +1,8 @@
 import { AggregateRoot } from '@/shared/seedwork/aggregate-root'
-import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
+import type { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
 
-import { AssetCode } from './asset-code'
-import { AssetName } from './asset-name'
+import type { AssetCode } from './asset-code'
+import type { AssetName } from './asset-name'
 
 interface AssetProperties {
 	name: AssetName

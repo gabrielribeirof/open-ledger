@@ -1,4 +1,4 @@
-import { UniqueIdentifier } from './unique-identifier'
+import type { UniqueIdentifier } from './unique-identifier'
 
 export interface IDomainEvent {
 	dateTimeOccurred: Date

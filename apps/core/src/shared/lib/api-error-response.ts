@@ -1,4 +1,5 @@
-import { applyDecorators, HttpStatus } from '@nestjs/common'
+import type { HttpStatus } from '@nestjs/common'
+import { applyDecorators } from '@nestjs/common'
 import { ApiResponse, getSchemaPath } from '@nestjs/swagger'
 
 import { InvalidFormatViolation } from '../domain/_errors/violations/invalid-format.violation'

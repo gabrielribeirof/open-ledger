@@ -2,8 +2,8 @@ import { faker } from '@faker-js/faker/.'
 
 import { Account } from '@/domain/account/account'
 import { AccountAlias } from '@/domain/account/account-alias'
-import { AssetCode } from '@/domain/asset/asset-code'
-import { Amount } from '@/shared/domain/amount'
+import type { AssetCode } from '@/domain/asset/asset-code'
+import type { Amount } from '@/shared/domain/amount'
 
 import { generateFakeAmount } from './amount.helpers'
 import { generateFakeAssetCodeValue } from './asset.helpers'
@@ -32,4 +32,11 @@ export function generateFakeAccount(properties: GenerateFakeAccountProperties = 
 	const amount = properties.amount ?? generateFakeAmount().getRight()
 
 	account.deposit(amount)
+
+	return account
+}
+
+export const accountMock = {
+	asset_code: 'USD',
+	alias: 'valid-account-alias',
 }

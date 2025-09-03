@@ -1,7 +1,7 @@
-import { ValidationError } from '@nestjs/common'
+import type { ValidationError } from '@nestjs/common'
 
 import { InvalidParametersError } from '../domain/_errors/invalid-parameters.error'
-import { Violation } from '../seedwork/violation'
+import type { Violation } from '../seedwork/violation'
 import { fromValidationErrorToViolationUtil } from './from-validation-error-to-violation.util'
 
 export function parseValidationErrorsToErrorsUtil(validationErrors: ValidationError[]) {

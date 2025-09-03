@@ -1,6 +1,4 @@
-interface ValueObjectProperties {
-	[index: string]: any
-}
+type ValueObjectProperties = Record<string, any>
 
 export abstract class ValueObject<T extends ValueObjectProperties> {
 	constructor(public properties: T) {}

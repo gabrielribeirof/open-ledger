@@ -1,9 +1,10 @@
 import { InvalidAmountError } from '@/shared/domain/_errors/invalid-amount.error'
-import { Amount } from '@/shared/domain/amount'
-import { Either, left, right } from '@/shared/lib/either'
+import type { Amount } from '@/shared/domain/amount'
+import type { Either } from '@/shared/lib/either'
+import { left, right } from '@/shared/lib/either'
 import { Entity } from '@/shared/seedwork/entity'
-import { Error } from '@/shared/seedwork/error'
-import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
+import type { Error } from '@/shared/seedwork/error'
+import type { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
 
 import { OperationType } from './operation-type'
 

@@ -1,5 +1,5 @@
 import { Entity } from './entity'
-import { IDomainEvent } from './idomain-event'
+import type { IDomainEvent } from './idomain-event'
 
 export abstract class AggregateRoot<T> extends Entity<T> {
 	private readonly _domainEvents: IDomainEvent[] = []

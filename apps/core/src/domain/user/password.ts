@@ -1,9 +1,10 @@
 import * as bcrypt from 'bcrypt'
 
 import { BadLengthViolation } from '@/shared/domain/_errors/violations/bad-length.violation'
-import { Either, left, right } from '@/shared/lib/either'
+import type { Either } from '@/shared/lib/either'
+import { left, right } from '@/shared/lib/either'
 import { ValueObject } from '@/shared/seedwork/value-object'
-import { Violation } from '@/shared/seedwork/violation'
+import type { Violation } from '@/shared/seedwork/violation'
 
 interface PasswordProperties {
 	value: string

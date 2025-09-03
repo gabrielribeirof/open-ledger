@@ -1,5 +1,5 @@
-import { Account } from '@/domain/account/account'
-import { IAccountRepository } from '@/domain/account/iaccount.repository'
+import type { Account } from '@/domain/account/account'
+import type { IAccountRepository } from '@/domain/account/iaccount.repository'
 
 export class InMemoryAccountRepository implements IAccountRepository {
 	public accounts = new Map<string, Account>()

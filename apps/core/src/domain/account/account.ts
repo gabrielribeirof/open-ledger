@@ -1,10 +1,10 @@
-import { AssetCode } from '@/domain/asset/asset-code'
+import type { AssetCode } from '@/domain/asset/asset-code'
 import { InsufficientFundsError } from '@/shared/domain/_errors/insufficient-funds.error'
 import { Amount } from '@/shared/domain/amount'
 import { AggregateRoot } from '@/shared/seedwork/aggregate-root'
-import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
+import type { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
 
-import { AccountAlias } from './account-alias'
+import type { AccountAlias } from './account-alias'
 
 interface AccountProperties {
 	amount: Amount
@@ -49,14 +49,15 @@ export class Account extends AggregateRoot<AccountProperties> {
 		super(props, id)
 	}
 
-	public static create(props: AccountCreateProperties, id?: UniqueIdentifier): Account {
-		return new Account(
-			{
-				...props,
-				amount: Amount.zero(),
-				version: 1,
-			},
-			id,
-		)
+	public static create(props: AccountCreateProperties): Account {
+		return new Account({
+			...props,
+			amount: Amount.zero(),
+			version: 1,
+		})
+	}
+
+	public static from(props: AccountProperties, id: UniqueIdentifier): Account {
+		return new Account(props, id)
 	}
 }

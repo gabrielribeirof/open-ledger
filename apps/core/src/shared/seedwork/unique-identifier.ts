@@ -1,8 +1,9 @@
 import { v4, validate } from 'uuid'
 
 import { InvalidFormatViolation } from '../domain/_errors/violations/invalid-format.violation'
-import { Either, left, right } from '../lib/either'
-import { Violation } from './violation'
+import type { Either } from '../lib/either'
+import { left, right } from '../lib/either'
+import type { Violation } from './violation'
 
 export class UniqueIdentifier {
 	private readonly _value: string

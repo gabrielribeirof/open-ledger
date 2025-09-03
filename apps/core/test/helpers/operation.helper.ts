@@ -1,6 +1,6 @@
 import { Operation } from '@/domain/transaction/operation'
 import { OperationType } from '@/domain/transaction/operation-type'
-import { Amount } from '@/shared/domain/amount'
+import type { Amount } from '@/shared/domain/amount'
 import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
 
 import { generateFakeAmount } from './amount.helpers'

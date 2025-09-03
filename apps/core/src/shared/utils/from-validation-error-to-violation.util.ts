@@ -3,7 +3,7 @@ import { IS_DECIMAL, IS_UUID } from 'class-validator'
 import { InvalidDecimalViolation } from '../domain/_errors/violations/invalid-decimal.violation'
 import { InvalidFormatViolation } from '../domain/_errors/violations/invalid-format.violation'
 import { InvalidUUIDViolation } from '../domain/_errors/violations/invalid-uuid.violation'
-import { Violation } from '../seedwork/violation'
+import type { Violation } from '../seedwork/violation'
 
 export function fromValidationErrorToViolationUtil(error: string): Violation {
 	switch (error) {

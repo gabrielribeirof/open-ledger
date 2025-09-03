@@ -1,5 +1,5 @@
-import { UniqueIdentifier } from '../../shared/seedwork/unique-identifier'
-import { User } from './user'
+import type { UniqueIdentifier } from '../../shared/seedwork/unique-identifier'
+import type { User } from './user'
 
 export interface IUserRepository {
 	findById(id: UniqueIdentifier): Promise<User | null>

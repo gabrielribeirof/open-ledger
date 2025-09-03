@@ -1,5 +1,5 @@
-import { ITransactionRepository } from '@/domain/transaction/itransaction.repository'
-import { Transaction } from '@/domain/transaction/transaction'
+import type { ITransactionRepository } from '@/domain/transaction/itransaction.repository'
+import type { Transaction } from '@/domain/transaction/transaction'
 
 export class InMemoryTransactionRepository implements ITransactionRepository {
 	public transactions = new Map<string, Transaction>()

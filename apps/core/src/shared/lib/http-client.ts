@@ -1,6 +1,6 @@
-import { HttpService } from '@nestjs/axios'
-import { Logger } from '@nestjs/common'
-import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import type { HttpService } from '@nestjs/axios'
+import type { Logger } from '@nestjs/common'
+import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 
 export abstract class HttpClient {
 	constructor(

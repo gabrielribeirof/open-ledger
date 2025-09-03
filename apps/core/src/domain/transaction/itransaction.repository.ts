@@ -1,4 +1,4 @@
-import { Transaction } from './transaction'
+import type { Transaction } from './transaction'
 
 export interface ITransactionRepository {
 	save(transaction: Transaction): Promise<void>

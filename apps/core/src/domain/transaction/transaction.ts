@@ -3,23 +3,19 @@ import { TransactionMustHaveAtLeastOneDebitAndCreditOperationError } from '@/sha
 import { TransactionOperationsTotalAmountBalanceError } from '@/shared/domain/_errors/transaction-operations-total-amount-balance.error'
 import { TransactionOperationsTotalAmountMismatchError } from '@/shared/domain/_errors/transaction-operations-total-amount-mismatch.error'
 import { Amount } from '@/shared/domain/amount'
-import { Either, left, right } from '@/shared/lib/either'
+import type { Either } from '@/shared/lib/either'
+import { left, right } from '@/shared/lib/either'
 import { AggregateRoot } from '@/shared/seedwork/aggregate-root'
-import { Error } from '@/shared/seedwork/error'
-import { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
+import type { Error } from '@/shared/seedwork/error'
+import type { UniqueIdentifier } from '@/shared/seedwork/unique-identifier'
 
-import { Operation } from './operation'
+import type { Operation } from './operation'
 import { OperationType } from './operation-type'
 
 interface TransactionProperties {
 	amount: Amount
 	asset_id: UniqueIdentifier
 	operations: Operation[]
-}
-
-export interface Distribution {
-	account_id: UniqueIdentifier
-	amount: Amount
 }
 
 export class Transaction extends AggregateRoot<TransactionProperties> {

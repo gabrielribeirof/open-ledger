@@ -1,4 +1,4 @@
-import { Account } from './account'
+import type { Account } from './account'
 
 export interface IAccountRepository {
 	findByAlias(alias: string): Promise<Account | null>
