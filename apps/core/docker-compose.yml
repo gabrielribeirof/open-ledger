@@ -22,8 +22,7 @@ services:
       - .env
     command: yarn test:cov
     volumes:
-      - .:/core-app
-      - /core-app/node_modules
+      - .:/core
     depends_on:
       - database
     links:
@@ -33,12 +32,9 @@ services:
     build: .
     env_file:
       - .env
-    environment:
-      MIKRO_ORM_ENTITIES: ./src/infrastructure/mikro-orm/entities
     command: yarn migrate
     volumes:
-      - .:/core-app
-      - /core-app/node_modules
+      - .:/core
     depends_on:
       database:
         condition: service_healthy
@@ -46,7 +42,6 @@ services:
       - database
 
   app:
-    container_name: core-app
     build: .
     env_file:
       - .env
@@ -54,7 +49,7 @@ services:
       - 3000:3000
     command: yarn start:debug
     volumes:
-      - .:/core-app
+      - .:/core
     depends_on:
       database:
         condition: service_healthy
