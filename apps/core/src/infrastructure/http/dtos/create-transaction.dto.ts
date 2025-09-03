@@ -2,9 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { Transform } from 'class-transformer'
 import { IsArray, IsNumber, IsString, Min, ValidateNested } from 'class-validator'
 
-import { AmountDistributionDTO } from './children/amount-distribution.dto'
-import { RemainingDistributionDTO } from './children/remaining-distribution.dto'
-import { ShareDistributionDTO } from './children/share-distribution.dto'
+import { DistributionDTO } from './children/distribution.dto'
 
 export class CreateTransactionDTO {
 	@ApiProperty({
@@ -46,7 +44,7 @@ export class CreateTransactionDTO {
 	})
 	@IsArray()
 	@ValidateNested({ each: true })
-	sources!: (AmountDistributionDTO | ShareDistributionDTO | RemainingDistributionDTO)[]
+	sources!: DistributionDTO[]
 
 	@ApiProperty({
 		description: 'Target accounts and their distribution strategies',
@@ -64,5 +62,5 @@ export class CreateTransactionDTO {
 	})
 	@IsArray()
 	@ValidateNested({ each: true })
-	targets!: (AmountDistributionDTO | ShareDistributionDTO | RemainingDistributionDTO)[]
+	targets!: DistributionDTO[]
 }
