@@ -3,7 +3,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "always"
   },
-  "debug.javascript.autoAttachFilter": "always",
+  "debug.javascript.autoAttachFilter": "onlyWithFlag",
   "[json][jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true
