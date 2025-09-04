@@ -156,6 +156,16 @@ describe('Amount', () => {
 			expect(amount.isRight()).toBe(true)
 		})
 
+		it('should create a valid maximum data', () => {
+			const amount = generateFakeAmount({ value: Amount.MAXIMUM_VALUE, scale: Amount.MAXIMUM_SCALE })
+			expect(amount.isRight()).toBe(true)
+		})
+
+		it('should create a valid minimum data', () => {
+			const amount = generateFakeAmount({ value: BigInt(Amount.MINIMUM_NUMBER), scale: Amount.MINIMUM_NUMBER })
+			expect(amount.isRight()).toBe(true)
+		})
+
 		it('should not create an amount with value less than minimum number property', () => {
 			const amount = generateFakeAmount({ value: BigInt(Amount.MINIMUM_NUMBER - 1) })
 			expect(amount.isLeft()).toBe(true)
