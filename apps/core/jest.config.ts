@@ -1,4 +1,4 @@
-import { Config } from '@jest/types'
+import type { Config } from '@jest/types'
 import * as fs from 'fs'
 import * as path from 'path'
 import { pathsToModuleNameMapper } from 'ts-jest'
