@@ -23,3 +23,8 @@ export function generateFakeAsset(props: GenerateFakeAssetProperties = {}) {
 		code: generateFakeAssetCodeValue({ value: props.code }),
 	})
 }
+
+export const assetMock = {
+	name: 'US Dollar',
+	code: 'USD',
+}
