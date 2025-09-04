@@ -2,41 +2,36 @@ import { faker } from '@faker-js/faker/.'
 import { generateFakeAccount } from '@test/helpers/account.helpers'
 import { generateFakeAmount } from '@test/helpers/amount.helpers'
 import { generateFakeAsset } from '@test/helpers/asset.helpers'
-import { generateFakeUnitOfWork } from '@test/helpers/unit-of-work.helpers'
 
 import { CreateTransactionDomainService } from '@/domain/services/create-transaction.domain-service'
+import { AmountDistribution } from '@/domain/services/inputs/children/amount-distribution'
+import { RemainingDistribution } from '@/domain/services/inputs/children/remaining-distribution'
+import { ShareDistribution } from '@/domain/services/inputs/children/share-distribution'
+import { CreateTransactionDomainServiceInput } from '@/domain/services/inputs/create-transaction.domain-service.input'
 import { Transaction } from '@/domain/transaction/transaction'
+import { TransactionAccountAssetMismatchError } from '@/shared/domain/_errors/transaction-account-asset-mismatch.error'
 import { Error } from '@/shared/seedwork/error'
-import { ErrorCode } from '@/shared/seedwork/error-code'
-import { IUnitOfWork } from '@/shared/seedwork/iunit-of-work'
 
-function executeSut(
-	properties: Partial<Parameters<CreateTransactionDomainService['execute']>[0]> = {},
-	unitOfWork: IUnitOfWork = generateFakeUnitOfWork(),
-) {
+function executeSut(properties: Partial<Parameters<CreateTransactionDomainService['execute']>[0]> = {}) {
 	const amount = properties.amount ?? generateFakeAmount().getRight()
 	const asset = properties.asset ?? generateFakeAsset()
 
-	return new CreateTransactionDomainService(unitOfWork).execute({
-		amount,
-		asset,
-		sources: properties.sources ?? [
-			{
-				account: generateFakeAccount({ amount: amount }),
-				amount: amount,
-			},
-		],
-		targets: properties.targets ?? [
-			{
-				account: generateFakeAccount({ amount: amount }),
-				amount: amount,
-			},
-		],
-	})
+	return new CreateTransactionDomainService().execute(
+		new CreateTransactionDomainServiceInput(
+			amount,
+			asset,
+			properties.sources ?? [
+				new AmountDistribution(generateFakeAccount({ amount: amount, assetCode: asset.code }), amount),
+			],
+			properties.targets ?? [
+				new AmountDistribution(generateFakeAccount({ amount: amount, assetCode: asset.code }), amount),
+			],
+		),
+	)
 }
 
 describe('CreateTransactionDomainService', () => {
-	it('should create a transaction when valid inputs', async () => {
+	it('should create a transaction with amount distributions', async () => {
 		const amount = generateFakeAmount().getRight()
 
 		const sut = await executeSut({ amount })
@@ -46,7 +41,7 @@ describe('CreateTransactionDomainService', () => {
 		expect(sut.amount.equals(amount)).toBeTruthy()
 	})
 
-	it('should create a transaction with shared', async () => {
+	it('should create a transaction with shared distributions', async () => {
 		const amount = generateFakeAmount({ value: faker.number.bigInt({ min: 2 }) }).getRight()
 		const asset = generateFakeAsset()
 
@@ -56,24 +51,12 @@ describe('CreateTransactionDomainService', () => {
 			amount,
 			asset,
 			sources: [
-				{
-					account: generateFakeAccount({ amount }),
-					remaining: true,
-				},
-				{
-					account: generateFakeAccount({ amount }),
-					share: percentageOfAmount,
-				},
+				new RemainingDistribution(generateFakeAccount({ amount, assetCode: asset.code })),
+				new ShareDistribution(generateFakeAccount({ amount, assetCode: asset.code }), percentageOfAmount),
 			],
 			targets: [
-				{
-					account: generateFakeAccount({ amount }),
-					remaining: true,
-				},
-				{
-					account: generateFakeAccount({ amount }),
-					share: percentageOfAmount,
-				},
+				new RemainingDistribution(generateFakeAccount({ amount, assetCode: asset.code })),
+				new ShareDistribution(generateFakeAccount({ amount, assetCode: asset.code }), percentageOfAmount),
 			],
 		})
 
@@ -82,7 +65,7 @@ describe('CreateTransactionDomainService', () => {
 		expect(sut.amount.equals(amount)).toBeTruthy()
 	})
 
-	it('should create a transaction with remaining', async () => {
+	it('should create a transaction with remaining distributions', async () => {
 		const amount = generateFakeAmount({ value: faker.number.bigInt({ min: 2 }) }).getRight()
 		const asset = generateFakeAsset()
 
@@ -94,24 +77,18 @@ describe('CreateTransactionDomainService', () => {
 			amount,
 			asset,
 			sources: [
-				{
-					account: generateFakeAccount({ amount }),
-					amount: amount.subtract(subtractionAmount),
-				},
-				{
-					account: generateFakeAccount({ amount }),
-					remaining: true,
-				},
+				new AmountDistribution(
+					generateFakeAccount({ amount, assetCode: asset.code }),
+					amount.subtract(subtractionAmount),
+				),
+				new RemainingDistribution(generateFakeAccount({ amount, assetCode: asset.code })),
 			],
 			targets: [
-				{
-					account: generateFakeAccount({ amount }),
-					amount: amount.subtract(subtractionAmount),
-				},
-				{
-					account: generateFakeAccount({ amount }),
-					remaining: true,
-				},
+				new AmountDistribution(
+					generateFakeAccount({ amount, assetCode: asset.code }),
+					amount.subtract(subtractionAmount),
+				),
+				new RemainingDistribution(generateFakeAccount({ amount, assetCode: asset.code })),
 			],
 		})
 
@@ -120,43 +97,49 @@ describe('CreateTransactionDomainService', () => {
 		expect(sut.amount.equals(amount)).toBeTruthy()
 	})
 
-	it('should not create a transaction with invalid source', async () => {
+	it('should fail with invalid source', async () => {
 		await expect(
 			executeSut({
-				sources: [
-					{
-						account: generateFakeAccount(),
-						amount: generateFakeAmount({ value: 0n }).getRight(),
-					},
-				],
+				sources: [new AmountDistribution(generateFakeAccount(), generateFakeAmount({ value: 0n }).getRight())],
 			}),
 		).rejects.toBeInstanceOf(Error)
 	})
 
-	it('should not create a transaction with invalid target', async () => {
+	it('should fail with invalid target', async () => {
 		await expect(
 			executeSut({
-				targets: [
-					{
-						account: generateFakeAccount(),
-						amount: generateFakeAmount({ value: 0n }).getRight(),
-					},
-				],
+				targets: [new AmountDistribution(generateFakeAccount(), generateFakeAmount({ value: 0n }).getRight())],
 			}),
 		).rejects.toBeInstanceOf(Error)
 	})
 
-	it('should not create a transaction with invalid transaction data', async () => {
+	it('should fail with invalid transaction data', async () => {
 		await expect(executeSut({ targets: [] })).rejects.toBeInstanceOf(Error)
 	})
 
-	it('should not create a transaction when unit of work error', async () => {
-		const errorToThrow = new Error(ErrorCode.INTERNAL_SERVER_ERROR)
-		const unitOfWork = generateFakeUnitOfWork({
-			commit: jest.fn().mockRejectedValueOnce(errorToThrow),
-		})
+	it('should fail with source account asset mismatch', async () => {
+		await expect(
+			executeSut({
+				sources: [
+					new AmountDistribution(
+						generateFakeAccount({ assetCode: generateFakeAsset().code }),
+						generateFakeAmount().getRight(),
+					),
+				],
+			}),
+		).rejects.toBeInstanceOf(TransactionAccountAssetMismatchError)
+	})
 
-		await expect(executeSut({}, unitOfWork)).rejects.toEqual(errorToThrow)
-		expect(unitOfWork.rollback).toHaveBeenCalledTimes(1)
+	it('should fail with target account asset mismatch', async () => {
+		await expect(
+			executeSut({
+				targets: [
+					new AmountDistribution(
+						generateFakeAccount({ assetCode: generateFakeAsset().code }),
+						generateFakeAmount().getRight(),
+					),
+				],
+			}),
+		).rejects.toBeInstanceOf(TransactionAccountAssetMismatchError)
 	})
 })
