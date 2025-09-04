@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 
 import { Asset } from '@/domain/asset/asset'
 import { AssetCode } from '@/domain/asset/asset-code'
@@ -12,6 +12,7 @@ interface CreateAssetServiceInput {
 	code: string
 }
 
+@Injectable()
 export class CreateAssetService {
 	constructor(
 		@Inject(ASSET_REPOSITORY_TOKEN)

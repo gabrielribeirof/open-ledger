@@ -1,39 +1,35 @@
 import { Inject, Injectable } from '@nestjs/common'
 
-import {
-	ACCOUNT_REPOSITORY_TOKEN,
-	IAccountRepository as IAccountRepositoryV2,
-} from '@/domain/account/iaccount.repository'
 import { ASSET_REPOSITORY_TOKEN, IAssetRepository } from '@/domain/asset/iasset.repository'
-import {
-	CreateTransactionDomainService,
-	Distribution as DomainDistribution,
-} from '@/domain/services/create-transaction.domain-service'
+import { CreateTransactionDomainService } from '@/domain/services/create-transaction.domain-service'
+import { AmountDistribution as DomainAmountDistribution } from '@/domain/services/inputs/children/amount-distribution'
+import { Distribution as DomainDistribution } from '@/domain/services/inputs/children/distribution'
+import { RemainingDistribution as DomainRemainingDistribution } from '@/domain/services/inputs/children/remaining-distribution'
+import { ShareDistribution as DomainShareDistribution } from '@/domain/services/inputs/children/share-distribution'
 import { Transaction } from '@/domain/transaction/transaction'
 import { AccountNotFoundError } from '@/shared/domain/_errors/account-not-found.error'
 import { AssetNotFoundError } from '@/shared/domain/_errors/asset-not-found.error'
 import { InvalidAmountError } from '@/shared/domain/_errors/invalid-amount.error'
 import { InvalidParametersError } from '@/shared/domain/_errors/invalid-parameters.error'
 import { Amount } from '@/shared/domain/amount'
+import { IUnitOfWork, UNIT_OF_WORK_TOKEN } from '@/shared/seedwork/iunit-of-work'
 
-export interface AmountDistribution {
+interface AmountDistribution {
 	amount: {
 		value: bigint
 		scale: number
 	}
 }
 
-export interface ShareDistribution {
+interface ShareDistribution {
 	share: number
 }
 
-export interface RemainingDistribution {
+interface RemainingDistribution {
 	remaining: true
 }
 
-type DistributionStrategy = AmountDistribution | ShareDistribution | RemainingDistribution
-
-export type Distribution = DistributionStrategy & {
+type Distribution = (AmountDistribution | ShareDistribution | RemainingDistribution) & {
 	account_alias: string
 }
 
@@ -48,10 +44,10 @@ export interface CreateTransactionServiceInput {
 @Injectable()
 export class CreateTransactionService {
 	constructor(
+		@Inject(UNIT_OF_WORK_TOKEN)
+		private readonly unitOfWork: IUnitOfWork,
 		@Inject(ASSET_REPOSITORY_TOKEN)
 		private readonly assetRepository: IAssetRepository,
-		@Inject(ACCOUNT_REPOSITORY_TOKEN)
-		private readonly accountRepository: IAccountRepositoryV2,
 		private readonly createTransactionDomainService: CreateTransactionDomainService,
 	) {}
 
@@ -64,21 +60,41 @@ export class CreateTransactionService {
 
 		if (!asset) throw new AssetNotFoundError()
 
-		return this.createTransactionDomainService.execute({
-			asset,
-			amount: amount.value,
-			sources: await this.convertDistributionsToDomainDistributions(input.sources),
-			targets: await this.convertDistributionsToDomainDistributions(input.targets),
-		})
+		await this.unitOfWork.begin()
+
+		try {
+			const sources = await this.convertDistributionsToDomainDistributions(input.sources)
+			const targets = await this.convertDistributionsToDomainDistributions(input.targets)
+
+			const transaction = await this.createTransactionDomainService.execute({
+				amount: amount.value,
+				asset,
+				sources,
+				targets,
+			})
+
+			await this.unitOfWork.transactionRepository.save(transaction)
+			await Promise.all([
+				...sources.map((source) => this.unitOfWork.accountRepository.save(source.account)),
+				...targets.map((target) => this.unitOfWork.accountRepository.save(target.account)),
+			])
+
+			await this.unitOfWork.commit()
+
+			return transaction
+		} catch (error) {
+			await this.unitOfWork.rollback(error)
+			throw error
+		}
 	}
 
 	private async convertDistributionsToDomainDistributions(
 		distributions: Distribution[],
 	): Promise<DomainDistribution[]> {
-		const accountDistributions: DomainDistribution[] = []
+		const domainDistributions: DomainDistribution[] = []
 
 		for (const { account_alias, ...distribution } of distributions) {
-			const account = await this.accountRepository.findByAlias(account_alias)
+			const account = await this.unitOfWork.accountRepository.findByAlias(account_alias)
 
 			if (!account) throw new AccountNotFoundError()
 
@@ -90,14 +106,14 @@ export class CreateTransactionService {
 
 				if (amount.isLeft()) throw new InvalidAmountError()
 
-				accountDistributions.push({ account, amount: amount.value })
+				domainDistributions.push(new DomainAmountDistribution(account, amount.value))
 			}
 
-			if ('share' in distribution) accountDistributions.push({ account, share: distribution.share })
+			if ('share' in distribution) domainDistributions.push(new DomainShareDistribution(account, distribution.share))
 
-			if ('remaining' in distribution) accountDistributions.push({ account, remaining: distribution.remaining })
+			if ('remaining' in distribution) domainDistributions.push(new DomainRemainingDistribution(account))
 		}
 
-		return accountDistributions
+		return domainDistributions
 	}
 }

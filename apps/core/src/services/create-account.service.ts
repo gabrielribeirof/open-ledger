@@ -1,4 +1,4 @@
-import { Inject } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 
 import { Account } from '@/domain/account/account'
 import { AccountAlias } from '@/domain/account/account-alias'
@@ -13,6 +13,7 @@ interface CreateAccountServiceInput {
 	alias: string
 }
 
+@Injectable()
 export class CreateAccountService {
 	constructor(
 		@Inject(ASSET_REPOSITORY_TOKEN)
