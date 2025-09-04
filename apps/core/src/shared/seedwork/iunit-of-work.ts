@@ -1,5 +1,5 @@
-import { IAccountRepository } from '@/domain/account/iaccount.repository'
-import { ITransactionRepository } from '@/domain/transaction/itransaction.repository'
+import type { IAccountRepository } from '@/domain/account/iaccount.repository'
+import type { ITransactionRepository } from '@/domain/transaction/itransaction.repository'
 
 export interface IUnitOfWork {
 	transactionRepository: ITransactionRepository
@@ -9,4 +9,4 @@ export interface IUnitOfWork {
 	rollback(error: unknown): Promise<void>
 }
 
-export const UNIT_OF_WORK = 'IUnitOfWork'
+export const UNIT_OF_WORK_TOKEN = 'IUnitOfWork'
