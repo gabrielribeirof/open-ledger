@@ -24,6 +24,8 @@ export class AccountController {
 			$ref: getSchemaPath(AccountDTO),
 		},
 	})
+	@ApiErrorResponse(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_PARAMETERS)
+	@ApiErrorResponse(HttpStatus.NOT_FOUND, ErrorCode.ASSET_NOT_FOUND)
 	@ApiErrorResponse(HttpStatus.CONFLICT, ErrorCode.ALREADY_EXISTS)
 	async create(@Body() body: CreateAccountDTO): Promise<AccountDTO> {
 		const account = await this.createAccountService.execute(body)
