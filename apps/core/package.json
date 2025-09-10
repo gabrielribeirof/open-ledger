@@ -13,9 +13,10 @@
 		"typeorm": "typeorm-ts-node-esm",
 		"migrate": "yarn typeorm migration:run --dataSource src/infrastructure/typeorm/data-source.ts",
 		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-		"test": "jest --verbose",
-		"test:cov": "jest --coverage --verbose",
+		"test": "jest --verbose --runInBand",
+		"test:cov": "jest --coverage --verbose --runInBand",
 		"test:unit": "jest --testMatch='<rootDir>/test/unit/**/*spec.ts' --verbose --coverage",
+		"test:unit:debug": "node --inspect-brk=0.0.0.0:9229 -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --testMatch='<rootDir>/test/unit/**/*spec.ts' --verbose --coverage --runInBand",
 		"test:functional": "jest --testMatch='<rootDir>/test/functional/**/*spec.ts' --verbose --coverage --runInBand",
 		"test:watch": "jest --watchAll",
 		"test:debug": "node --inspect-brk=0.0.0.0:9229 -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
