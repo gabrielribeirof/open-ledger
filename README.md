@@ -138,3 +138,12 @@ make help
 ```
 
 And inside each `/apps` child folder.
+
+## Inspirations and Acknowledgments
+
+Beyond the goal of creating a functional product, this project also serves as a practical exercise in implementing specific software engineering techniques observed in high-quality, real-world applications.
+
+Special credit goes to the following projects, which served as significant sources of inspiration:
+
+- [PicPay - Backend Challenge](https://github.com/PicPay/picpay-desafio-backend): This challenge provides valuable insights into the architectural patterns and requirements for building a high-volume transactional system. It was an excellent reference for designing robust and scalable solutions.
+- [Midaz by LerianStudio](https://github.com/LerianStudio/midaz): As a comprehensive, open-source Core Ledger, Midaz provided a clear and powerful reference for the core domain of this project. Its approach to multi-asset accounting and cloud-native design was a major inspiration.
