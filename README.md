@@ -102,3 +102,39 @@ Transaction: Goods In Transit
     Debit:  Accounts.InTransit        PRODUCT_SKU_XYZ 200
     Credit: Accounts.SupplierStock    PRODUCT_SKU_XYZ 200
 ```
+
+## Development Environment
+
+In order to develop for this project you must have Docker and Docker Compose installed.
+
+1. Clone the repository
+
+```
+git clone git@github.com:gabrielribeirof/open-ledger.git
+cd open-ledger
+```
+
+2. Set up environment variables
+
+```
+make set-env
+```
+
+3. Star the services
+
+```
+make up
+```
+
+4. Access the services
+
+- Core API: http://localhost:3000
+  - Core API Swagger: http://localhost:3000/swagger
+
+5. Explore makefile commands
+
+```
+make help
+```
+
+And inside each `/apps` child folder.
