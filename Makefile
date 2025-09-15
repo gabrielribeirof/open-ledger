@@ -1,6 +1,6 @@
-CORE_DIR := ./apps/core
+ENGINE_DIR := ./apps/engine
 
-APPS := $(CORE_DIR)
+APPS := $(ENGINE_DIR)
 
 .PHONY: help
 help:
@@ -12,10 +12,20 @@ help:
 	@echo "Makefile commands:"
 	@echo ""
 	@echo " make help                                    Show this help message"
+	@echo " make engine COMMAND=<cmd>                    Run a command in the engine app"
 	@echo " make set-env                                 Set up environment variables"
 	@echo " make up                                      Start all applications"
 	@echo " make down                                    Stop all applications"
 	@echo ""
+
+.PHONY: engine
+engine:
+	@echo "Running command in engine app"
+	@if [ -z "$(COMMAND)" ]; then \
+		echo "Error: No command specified. Use COMMAND=<cmd> to specify a command."; \
+		exit 1; \
+	fi
+	@cd $(ENGINE_DIR) && $(MAKE) $(COMMAND)
 
 .PHONY: set-env
 set-env:
@@ -39,7 +49,6 @@ up:
 		echo "Starting application in $$dir..."; \
 		(cd $$dir && make up); \
 	done
-	@echo "All applications started."
 
 .PHONY: down
 down:

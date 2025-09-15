@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn, VersionColumn } from 'typeorm'
 
 import { AssetEntity } from './asset.entity'
 
@@ -19,7 +19,7 @@ export class AccountEntity {
 	@Column()
 	alias!: string
 
-	@Column()
+	@VersionColumn()
 	version!: number
 
 	@ManyToOne(() => AssetEntity)

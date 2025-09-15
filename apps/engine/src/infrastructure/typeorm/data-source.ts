@@ -6,6 +6,6 @@ export const dataSource = new DataSource({
 	port: 5432,
 	username: 'open-ledger',
 	password: 'open-ledger',
-	database: 'core',
+	database: 'engine',
 	migrations: ['src/infrastructure/typeorm/migrations/*.ts'],
 })
