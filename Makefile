@@ -1,6 +1,7 @@
 ENGINE_DIR := ./apps/engine
+COCKPIT_DIR := ./apps/cockpit
 
-APPS := $(ENGINE_DIR)
+APPS := $(ENGINE_DIR) $(COCKPIT_DIR)
 
 .PHONY: help
 help:

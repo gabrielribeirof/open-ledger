@@ -1,0 +1,10 @@
+services:
+  cockpit:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - ${HTTP_PORT}:${HTTP_PORT}
+    command: yarn dev -p ${HTTP_PORT}
+    volumes:
+      - .:/cockpit
